@@ -3,9 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 project (Torch)
 
 set(TORCH_HEADERS
-    include/torch/modules/HTTP/application.hpp
-    include/torch/modules/http.hpp
-    include/torch/modules/Logs/logs.hpp
+    include/torch/HTTP/application.hpp
+    include/torch/http.hpp
+
+    include/torch/Logs/logs.hpp
+    include/torch/logs.hpp
     )
 
 set(TORCH_SOURCES

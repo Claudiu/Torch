@@ -1,10 +1,10 @@
 #include <iostream>
-#include <torch/modules/http.hpp>
-#include <torch/modules/Logs/logs.hpp>
+#include <torch/http.hpp>
+#include <torch/logs.hpp>
 
 namespace Routes {
 	void index() {
-		std::cout << "Awesome";
+		Torch::toLog("Found Index");
 	}
 };
 
@@ -17,7 +17,7 @@ int main(int argc, char const *argv[])
 		app.get("/account/:name", Routes::index);
 
 	} catch (std::exception e) {
-		toLog(e.what());
+		Torch::toLog(e.what());
 	}
 	return 0;
 }

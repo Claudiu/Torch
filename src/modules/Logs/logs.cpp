@@ -1,6 +1,6 @@
-#include <torch/modules/Logs/logs.hpp>
+#include <torch/Logs/logs.hpp>
 
-std::string getTimestamp(const char* format) {
+std::string Torch::getTimestamp(const char* format) {
 	char date[30];
 	time_t t = time(0);
 	struct tm *tm;
@@ -11,7 +11,7 @@ std::string getTimestamp(const char* format) {
 	return std::string(date);
 }
 
-void toLog(std::string msg, unsigned short Level) {
+void Torch::toLog(std::string msg, unsigned short Level) {
 	if(Level == 0) {
 		std::cout << getTimestamp() << msg << std::endl;
 	} else {

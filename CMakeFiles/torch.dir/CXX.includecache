@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/claudiu/Documents/Torch/src/modules/Logs/logs.cpp
+torch/Logs/logs.hpp
+-
+
+include/torch/Logs/logs.hpp
+time.h
+-
+iostream
+-
+

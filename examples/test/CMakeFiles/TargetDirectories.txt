@@ -1,0 +1,2 @@
+/home/claudiu/Documents/Torch/examples/test/CMakeFiles/test.dir
+/home/claudiu/Documents/Torch/examples/test/build-torch/CMakeFiles/torch.dir
