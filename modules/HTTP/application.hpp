@@ -1,8 +1,6 @@
 #ifndef __HTTP_APPLICATION_H__
 #define __HTTP_APPLICATION_H__
 
-#define DEFAULT_PORT 80
-
 namespace Torch {
 	namespace HTTP {
 		struct application
