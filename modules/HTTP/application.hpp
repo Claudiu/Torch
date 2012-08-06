@@ -5,18 +5,18 @@ typedef void (*Callback_func)();
 
 namespace Torch {
 	namespace HTTP {
+
 		struct application
 		{
 			void get(std::string what, Callback_func cback) {
-				if(what == "/")
-					cback();
+				if(what == "/") cback();
+				//else throw "da";
 			}
 			
 			void put();
 			void post();
 
 			void listen(short port = DEFAULT_PORT) {
-
 			}
 		};
 	}
