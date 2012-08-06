@@ -1,7 +1,13 @@
 #include <iostream>
+#include "Modules/HTTP/application.hpp"
 
 int main(int argc, char const *argv[])
 {
-	std::cout << "Test";
+	Torch::HTTP::application app;
+	
+	app.get("STDIO");
+	
+	app.listen(8080);
+
 	return 0;
 }
