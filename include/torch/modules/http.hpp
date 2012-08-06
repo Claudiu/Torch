@@ -3,6 +3,6 @@
 
 #define DEFAULT_PORT 80
 
-#include "HTTP/application.hpp"
+#include <torch/modules/HTTP/application.hpp>
 
 #endif

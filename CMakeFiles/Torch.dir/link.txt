@@ -1,1 +1,0 @@
-/usr/bin/c++       CMakeFiles/Torch.dir/main.cpp.o  -o Torch -rdynamic 

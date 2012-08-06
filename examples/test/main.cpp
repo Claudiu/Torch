@@ -1,6 +1,6 @@
 #include <iostream>
-#include "modules/http.hpp"
-#include "modules/Logs/logs.hpp"
+#include <torch/modules/http.hpp>
+#include <torch/modules/Logs/logs.hpp>
 
 namespace Routes {
 	void index() {
