@@ -1,5 +1,6 @@
 #include <torch/HTTP/application.hpp>
 #include <torch/sockets.hpp>
+#include <torch/logs.hpp>
 #include <set>
 
 using namespace Torch;
@@ -20,7 +21,13 @@ namespace Torch{
                 connection(socket * s, application * a) : sock(s), app(a) {
                 }
                 
-                void read_stuff();
+                void read_stuff()
+                {
+                    uint8_t b[512];
+                    ssize_t s = sock->read(b, 511);
+                    b[s] = '\0';
+                    Torch::toLog(std::string((char*)b));
+                }
                 
                 ~connection() {
                     delete sock;
@@ -43,12 +50,24 @@ void application::listen(short port)
         for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
         {
             socket * ls = *i;
-            while (ls->can_accept())
+            try
             {
-                socket * s = ls->accept();
-                s->set_blocking(false);
-                conns.insert(new connection(s, this));
+                while (ls->can_accept())
+                {
+                    socket * s = ls->accept();
+                    s->set_blocking(false);
+                    conns.insert(new connection(s, this));
+                }
+            } 
+            catch (...)
+            {
+                Torch::toLog("meowm");
             }
+          /*  catch (const socket_exception & ex)
+            {
+                if (!ex.is_eagain())
+                    throw ex;
+            } */
         }
 
         std::set<connection*> remlist;
@@ -62,9 +81,9 @@ void application::listen(short port)
                     c->read_stuff();
                 if (s->can_write())
                     s->write_from_queue();
-            } catch (...)
+            } catch (const std::exception & ex)
             {
-                //could log here
+                Torch::toLog(ex.what());
                 err = true;
             }
             err = err || s->error();
