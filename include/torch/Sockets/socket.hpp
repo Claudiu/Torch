@@ -2,6 +2,7 @@
 #define __SOCKETS_SOCKET_H__
 
 #include <stdint.h>
+#include <sys/types.h>
 #include <list>
 #include <vector>
 #include <iostream>

@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -g")
 
 set(TORCH_HEADERS
+    include/torch/HTTP/headers.hpp
     include/torch/HTTP/application.hpp
     include/torch/http.hpp
 
