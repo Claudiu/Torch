@@ -25,6 +25,8 @@ namespace Torch{
                 {
                     uint8_t b[512];
                     ssize_t s = sock->read(b, 511);
+                    if (!s)
+                        throw string_exception("Connection closed");
                     b[s] = '\0';
                     Torch::toLog(std::string((char*)b));
                 }
@@ -52,22 +54,18 @@ void application::listen(short port)
             socket * ls = *i;
             try
             {
-                while (ls->can_accept())
+                if (ls->can_accept())
                 {
                     socket * s = ls->accept();
                     s->set_blocking(false);
                     conns.insert(new connection(s, this));
                 }
             } 
-            catch (...)
-            {
-                Torch::toLog("meowm");
-            }
-          /*  catch (const socket_exception & ex)
+            catch (const socket_exception & ex)
             {
                 if (!ex.is_eagain())
                     throw ex;
-            } */
+            } 
         }
 
         std::set<connection*> remlist;
@@ -81,12 +79,20 @@ void application::listen(short port)
                     c->read_stuff();
                 if (s->can_write())
                     s->write_from_queue();
-            } catch (const std::exception & ex)
+            }
+            catch (const socket_exception & ex)
+            {
+                if (!ex.is_eagain())
+                {
+                    Torch::toLog(ex.what());
+                    err = true;
+                }
+            }
+            catch (const std::exception & ex)
             {
                 Torch::toLog(ex.what());
                 err = true;
             }
-            err = err || s->error();
             if (err)
             {
                 remlist.insert(c);
@@ -94,7 +100,8 @@ void application::listen(short port)
             }
         }
 
-        conns.erase(remlist.begin(), remlist.end());
+        for (std::set<connection*>::iterator i = remlist.begin(); i!=remlist.end(); i++)
+            conns.erase(*i);
     }
 
     for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)

@@ -51,7 +51,7 @@ bool socket::blocking()
     return (!(fcntl(fd, F_GETFL) | O_NONBLOCK));
 }
 
-ssize_t socket::write(uint8_t * buf, size_t size) throw()
+ssize_t socket::write(uint8_t * buf, size_t size)
 {
     ssize_t r = send(fd, buf, size, 0);
     if (r == -1)
@@ -59,7 +59,7 @@ ssize_t socket::write(uint8_t * buf, size_t size) throw()
     return r;
 }
 
-ssize_t socket::read(uint8_t * buf, size_t size) throw()
+ssize_t socket::read(uint8_t * buf, size_t size)
 {
     ssize_t r = recv(fd, buf, size, 0);
     if (r == -1)
@@ -72,6 +72,7 @@ bool socket::can_read()
     struct pollfd p;
     p.fd = fd;
     p.events = POLLIN;
+    p.revents = 0;
     poll(&p, 1, 0);
     return (p.revents | POLLIN) != 0;
 }
@@ -81,6 +82,7 @@ bool socket::can_write()
     struct pollfd p;
     p.fd = fd;
     p.events = POLLOUT;
+    p.revents = 0;
     poll(&p, 1, 0);
     return (p.revents | POLLOUT) != 0;
 }
@@ -90,6 +92,7 @@ bool socket::error()
     struct pollfd p;
     p.fd = fd;
     p.events = POLLERR;
+    p.revents = 0;
     poll(&p, 1, 0);
     return (p.revents | POLLERR) != 0;
 }
@@ -99,7 +102,7 @@ bool socket::can_accept()
     return can_read();
 }
 
-ssize_t socket::read_peek(uint8_t * buf, size_t size) throw()
+ssize_t socket::read_peek(uint8_t * buf, size_t size)
 {
    ssize_t r = recv(fd, buf, size, MSG_PEEK);
    if (r == -1)
@@ -107,16 +110,13 @@ ssize_t socket::read_peek(uint8_t * buf, size_t size) throw()
    return r;
 }
 
-Torch::Sockets::socket * socket::accept() throw()
+Torch::Sockets::socket * socket::accept()
 {
     struct sockaddr_storage ai;
     socklen_t s = sizeof(ai);
     int res = ::accept(fd, (struct sockaddr*)&ai, &s);
     if (res == -1)
-    {
-        Torch::toLog("meow");
         throw socket_exception(errno);
-    }
     return new socket(res);
 }
 
@@ -153,7 +153,7 @@ void socket::write_from_queue()
     }
 }
 
-std::vector<Torch::Sockets::socket*> socket::tcp_listeners_all_interfaces(short port) throw()
+std::vector<Torch::Sockets::socket*> socket::tcp_listeners_all_interfaces(short port)
 {
     std::vector<socket*> v;
     

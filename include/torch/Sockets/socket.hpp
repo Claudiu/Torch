@@ -37,16 +37,16 @@ namespace Torch {
             bool can_write();
             bool can_accept();
 
-            ssize_t read_peek(uint8_t * buf, size_t size) throw();
+            ssize_t read_peek(uint8_t * buf, size_t size);
 
-            ssize_t read(uint8_t * buf, size_t size) throw();
-            ssize_t write(uint8_t * buf, size_t size) throw();
-            socket * accept() throw();
+            ssize_t read(uint8_t * buf, size_t size);
+            ssize_t write(uint8_t * buf, size_t size);
+            socket * accept();
 
             void queue_for_writing(uint8_t * buf, size_t size); //feed me new-allocated pointers and I'll handle deleting them
             void write_from_queue();
 
-            static std::vector<socket*> tcp_listeners_all_interfaces(short port) throw();
+            static std::vector<socket*> tcp_listeners_all_interfaces(short port);
         };
     }
 }
