@@ -16,3 +16,8 @@ build*
 *.swo
 *.swp
 *~
+
+Makefile
+cmake_install.cmake
+CMakeFiles
+CMakeCache.txt

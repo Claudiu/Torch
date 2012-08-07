@@ -1,2 +1,0 @@
-/usr/bin/ar cr libtorch.a  CMakeFiles/torch.dir/src/modules/Logs/logs.cpp.o
-/usr/bin/ranlib libtorch.a
