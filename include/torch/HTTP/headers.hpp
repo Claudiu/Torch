@@ -1,4 +1,4 @@
-typedef enum HTTP_CODES { 
+enum HTTP_CODES { 
 	// 1xx: Information
 	HTTP_CONTINUE = 100,
 	HTTP_SWITCHING_PROTOCOLS,
