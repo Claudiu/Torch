@@ -14,6 +14,7 @@ set(TORCH_HEADERS
     include/torch/logs.hpp
 
     include/torch/Sockets/socket.hpp
+    include/torch/Sockets/select.hpp
     include/torch/sockets.hpp
     )
 
@@ -21,6 +22,7 @@ set(TORCH_SOURCES
     src/modules/Logs/logs.cpp
     src/modules/HTTP/application.cpp
     src/modules/Sockets/socket.cpp
+    src/modules/Sockets/select.cpp
     )
 
 add_library(torch ${TORCH_SOURCES} ${TORCH_HEADERS})

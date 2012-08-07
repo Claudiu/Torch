@@ -23,12 +23,16 @@ namespace Torch{
                 
                 void read_stuff()
                 {
-                    uint8_t b[512];
+                    uint8_t * b = new uint8_t[512];
                     ssize_t s = sock->read(b, 511);
                     if (!s)
+                    {
+                        delete[] b;
                         throw string_exception("Connection closed");
+                    }
                     b[s] = '\0';
                     Torch::toLog(std::string((char*)b));
+                    sock->queue_for_writing(b, s); //this frees b
                 }
                 
                 ~connection() {
@@ -41,23 +45,29 @@ namespace Torch{
 
 void application::listen(short port)
 {
+    select_struct sel;
+
     std::vector<socket*> l = socket::tcp_listeners_all_interfaces(port);
     for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
+    {
         (*i)->set_blocking(false);
+        sel.insert_socket(*i, select_struct::read);
+    }
 
     std::set<connection*> conns;
 
-    while (1) //this should be a select;
+    while (select(sel, 10000000), sel.count()) //this should be a select;
     {
         for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
         {
             socket * ls = *i;
             try
             {
-                if (ls->can_accept())
+                if (sel.can_read(ls))
                 {
                     socket * s = ls->accept();
                     s->set_blocking(false);
+                    sel.insert_socket(s, select_struct::read | select_struct::write);
                     conns.insert(new connection(s, this));
                 }
             } 
@@ -75,10 +85,11 @@ void application::listen(short port)
             socket * s = c->get_socket();
             bool err = false;
             try {
-                if (s->can_read())
+                if (sel.can_read(s))
                     c->read_stuff();
-                if (s->can_write())
+                if (sel.can_write(s))
                     s->write_from_queue();
+                sel.insert_socket(s, select_struct::read | (( s->write_queue_empty())?0:select_struct::write));
             }
             catch (const socket_exception & ex)
             {
@@ -95,6 +106,7 @@ void application::listen(short port)
             }
             if (err)
             {
+                sel.remove_socket(c->get_socket());
                 remlist.insert(c);
                 delete c;
             }

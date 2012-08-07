@@ -26,7 +26,7 @@ bool socket_exception::is_eagain() const {
     return ((err == EAGAIN) || (err == EWOULDBLOCK));
 }
 
-socket::socket(int filedes) : fd(filedes)
+socket::socket(int filedes) : fd(filedes), woff(0)
 {
     
 }
@@ -48,7 +48,7 @@ void socket::set_blocking(bool blocking)
 
 bool socket::blocking()
 {
-    return (!(fcntl(fd, F_GETFL) | O_NONBLOCK));
+    return (!(fcntl(fd, F_GETFL) & O_NONBLOCK));
 }
 
 ssize_t socket::write(uint8_t * buf, size_t size)
@@ -74,7 +74,7 @@ bool socket::can_read()
     p.events = POLLIN;
     p.revents = 0;
     poll(&p, 1, 0);
-    return (p.revents | POLLIN) != 0;
+    return (p.revents & POLLIN) != 0;
 }
 
 bool socket::can_write()
@@ -84,7 +84,7 @@ bool socket::can_write()
     p.events = POLLOUT;
     p.revents = 0;
     poll(&p, 1, 0);
-    return (p.revents | POLLOUT) != 0;
+    return (p.revents & POLLOUT) != 0;
 }
 
 bool socket::error()
@@ -94,7 +94,7 @@ bool socket::error()
     p.events = POLLERR;
     p.revents = 0;
     poll(&p, 1, 0);
-    return (p.revents | POLLERR) != 0;
+    return (p.revents & POLLERR) != 0;
 }
 
 bool socket::can_accept()

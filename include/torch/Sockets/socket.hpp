@@ -17,6 +17,8 @@ namespace Torch {
             bool is_eagain() const;
             const char * what() const throw();
         };
+    
+        struct select_struct;
 
         class socket
         {
@@ -45,8 +47,11 @@ namespace Torch {
 
             void queue_for_writing(uint8_t * buf, size_t size); //feed me new-allocated pointers and I'll handle deleting them
             void write_from_queue();
+            bool write_queue_empty() { return wq.empty(); }
 
             static std::vector<socket*> tcp_listeners_all_interfaces(short port);
+
+            int file_descriptor() { return fd; }
         };
     }
 }
