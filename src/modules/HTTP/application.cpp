@@ -57,7 +57,7 @@ void application::dispatch_request(const request & req, response & res)
             i->second(req, res);
         else
         {
-            //res.send_404(req.url());
+            res.send(std::string("<h1>404</h1> <p>Meow. Had problems catching your mouse: \"" + req.url() + "\""));
         }
     }
 }

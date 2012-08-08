@@ -8,7 +8,16 @@ Torch::HTTP::response::response(socket * sock) {
 void Torch::HTTP::response::send(std::string what, short code) {
 	std::stringstream temp;
 
-	temp << "HTTP/1.1 200 OK\n";
+    static std::map<short, std::string> * codes = NULL;
+    if (!codes)
+    {
+        codes = new std::map<short, std::string>;
+        (*codes)[200] = "OK";
+        (*codes)[404] = "Not Found";
+        (*codes)[418] = "I'm a teapot";
+    }
+
+	temp << "HTTP/1.1 "<<code<<" "<<(*codes)[code]<<"\n";
 	temp << "Content-Type: text/html\n";
 	temp << "Content-Length: " << what.length() << "\n";
 	temp << "Connection: close\n";
