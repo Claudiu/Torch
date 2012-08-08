@@ -3,5 +3,6 @@
 
 #include <torch/HTTP/headers.hpp>
 #include <torch/HTTP/application.hpp>
+#include <torch/HTTP/Response/response.hpp>
 
 #endif

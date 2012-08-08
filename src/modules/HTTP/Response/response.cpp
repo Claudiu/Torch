@@ -5,7 +5,7 @@ Torch::HTTP::response::response(socket * sock) {
 	this->sock = sock;
 }
 
-void Torch::HTTP::response::send(std::string what) {
+void Torch::HTTP::response::send(std::string what, short code) {
 	std::stringstream temp;
 
 	temp << "HTTP/1.1 200 OK\n";

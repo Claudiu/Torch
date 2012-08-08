@@ -1,5 +1,4 @@
-#include <torch/HTTP/application.hpp>
-#include <torch/HTTP/Response/response.hpp>
+#include <torch/http.hpp>
 #include <torch/sockets.hpp>
 #include <torch/logs.hpp>
 #include <set>

@@ -1,3 +1,6 @@
+#ifndef _HTTP_HEADER_CODES_
+#define _HTTP_HEADER_CODES_
+
 typedef enum
 { 
 	// 1xx: Information
@@ -54,3 +57,4 @@ typedef enum
 	HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511
 } HTTP_CODES ;
 
+#endif
