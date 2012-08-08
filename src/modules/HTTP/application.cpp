@@ -35,12 +35,13 @@ namespace Torch{
 
                     Torch::toLog("Bad kitty");
                     const char * kitty = "HTTP/1.1 200 OK\r\nServer: Example multi-thread server\r\nContent-Type: text/html\r\n\r\nBig Kitty\r\n\r\n\0";
-                    uint8_t * response = new uint8_t[strlen(kitty)];
+                    size_t kitty_tail_length = strlen(kitty); //kitty doesn't like her tail measured too many times
+                    uint8_t * response = new uint8_t[kitty_tail_length];
 
-                    memcpy(b, kitty, strlen(kitty));
+                    memcpy(b, kitty, kitty_tail_length);
 
                     Torch::toLog(std::string((char*)b));
-                    sock->queue_for_writing(b, strlen(kitty)); //this frees b
+                    sock->queue_for_writing(b, kitty_tail_length); //this frees b
                 }
                 
                 ~connection() {
@@ -56,6 +57,8 @@ void application::listen(short port)
     select_struct sel;
 
     std::vector<socket*> l = socket::tcp_listeners_all_interfaces(port);
+    if (l.empty())
+        throw string_exception("Could not bind to any interface");
     for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
     {
         (*i)->set_blocking(false);

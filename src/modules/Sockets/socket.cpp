@@ -176,16 +176,19 @@ std::vector<Torch::Sockets::socket*> socket::tcp_listeners_all_interfaces(short 
     for(p = servinfo; p != NULL; p = p->ai_next) {
         int sockfd;
         if (((sockfd = ::socket(p->ai_family, p->ai_socktype, p->ai_protocol)),sockfd) == -1) {
+            Torch::toLog(std::string("WARNING: socket() failed \"") + strerror(errno) + "\"");
             continue;
 	        }
 
         if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+            Torch::toLog(std::string("WARNING: bind() failed \"") + strerror(errno) + "\"");
             close(sockfd);
             continue;
         }
 
         if (listen(sockfd, SOMAXCONN))
         {
+            Torch::toLog(std::string("WARNING: listen() failed \"") + strerror(errno) + "\"");
             close(sockfd);
             continue;
         }
