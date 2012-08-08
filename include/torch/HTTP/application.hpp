@@ -13,9 +13,10 @@ namespace Torch {
 		{
             public:
 
-			void get(std::string what, Callback_func cback) {
-				if(what == "/") cback();
-				//else throw "da";
+			void get(std::string what, Callback_func cback, ...) {
+				if(what == "/") { 
+					cback();
+				}
 			}
 			
 			void put();

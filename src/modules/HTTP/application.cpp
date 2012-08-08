@@ -2,6 +2,7 @@
 #include <torch/sockets.hpp>
 #include <torch/logs.hpp>
 #include <set>
+#include <string.h>
 
 using namespace Torch;
 using namespace Torch::HTTP;
@@ -31,8 +32,15 @@ namespace Torch{
                         throw string_exception("Connection closed");
                     }
                     b[s] = '\0';
+
+                    Torch::toLog("Bad kitty");
+                    const char * kitty = "HTTP/1.1 200 OK\r\nServer: Example multi-thread server\r\nContent-Type: text/html\r\n\r\nBig Kitty\r\n\r\n\0";
+                    uint8_t * response = new uint8_t[strlen(kitty)];
+
+                    memcpy(b, kitty, strlen(kitty));
+
                     Torch::toLog(std::string((char*)b));
-                    sock->queue_for_writing(b, s); //this frees b
+                    sock->queue_for_writing(b, strlen(kitty)); //this frees b
                 }
                 
                 ~connection() {
