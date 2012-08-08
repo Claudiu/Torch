@@ -34,12 +34,11 @@ namespace Torch{
                         throw string_exception("Connection closed");
                     }
                     b[s] = '\0';
-
+                    request req(std::string((char*)b));
+                    delete[] b;
 
                     response res(sock);
                     res.send("<h1>Torch is fucking awesome</h1><p>This is the first html test in history</p>");
-
-                 //this frees b
                 }
                 
                 ~connection() {
