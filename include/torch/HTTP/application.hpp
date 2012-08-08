@@ -2,23 +2,31 @@
 #define __HTTP_APPLICATION_H__
 
 #include <string>
+#include <map>
 
 
-typedef void (*Callback_func)();
 
 namespace Torch {
 	namespace HTTP {
+        
+        class request;
+        class response;
+        class connection;
 
 		class application
 		{
             public:
+            typedef void (*callback_func)(const request &, response &);
+            protected:
+            std::map<std::string, callback_func> get_map;
 
-			void get(std::string what, Callback_func cback, ...) {
-				if(what == "/") { 
-					cback();
-				}
-			}
-			
+            void dispatch_request(const request &, response &);
+            friend class connection;
+
+            public:
+
+
+			void get(std::string what, callback_func cback);
 			void put();
 			void post();
 

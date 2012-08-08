@@ -10,6 +10,7 @@ set(TORCH_HEADERS
     include/torch/HTTP/headers.hpp
     include/torch/HTTP/application.hpp
     include/torch/HTTP/Response/response.hpp
+    include/torch/HTTP/request.hpp
     include/torch/http.hpp
 
     include/torch/Logs/logs.hpp
@@ -24,6 +25,7 @@ set(TORCH_SOURCES
     src/modules/Logs/logs.cpp
     src/modules/HTTP/application.cpp
     src/modules/HTTP/Response/response.cpp
+    src/modules/HTTP/request.cpp
     src/modules/Sockets/socket.cpp
     src/modules/Sockets/select.cpp
     )
