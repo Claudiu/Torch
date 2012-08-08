@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
 		app.get("/", Routes::index, Routes::index);
 		app.get("/account/:name", Routes::index);
 
-        app.listen(1337);
+        app.listen(3000);
 
 	} catch (std::exception e) {
 		Torch::toLog(e.what());

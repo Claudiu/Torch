@@ -1,8 +1,11 @@
 #include <torch/HTTP/application.hpp>
+#include <torch/HTTP/Response/response.hpp>
 #include <torch/sockets.hpp>
 #include <torch/logs.hpp>
 #include <set>
 #include <string.h>
+#include <sstream>
+#include <stdio.h>
 
 using namespace Torch;
 using namespace Torch::HTTP;
@@ -33,22 +36,18 @@ namespace Torch{
                     }
                     b[s] = '\0';
 
-                    Torch::toLog("Bad kitty");
-                    const char * kitty = "HTTP/1.1 200 OK\r\nServer: Example multi-thread server\r\nContent-Type: text/html\r\n\r\nBig Kitty\r\n\r\n\0";
-                    size_t kitty_tail_length = strlen(kitty); //kitty doesn't like her tail measured too many times
-                    uint8_t * response = new uint8_t[kitty_tail_length];
 
-                    memcpy(b, kitty, kitty_tail_length);
+                    response res(sock);
+                    res.send("<h1>Torch is fucking awesome</h1><p>This is the first html test in history</p>");
 
-                    Torch::toLog(std::string((char*)b));
-                    sock->queue_for_writing(b, kitty_tail_length); //this frees b
+                 //this frees b
                 }
                 
                 ~connection() {
                     delete sock;
                 }
             };
-    }
+        }
 }
 
 
