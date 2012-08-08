@@ -38,7 +38,7 @@ namespace Torch{
                     delete[] b;
 
                     response res(sock);
-                    res.send("<h1>Torch is fucking awesome</h1><p>This is the first html test in history</p>");
+                    app->dispatch_request(req, res);
                 }
                 
                 ~connection() {
@@ -48,6 +48,24 @@ namespace Torch{
         }
 }
 
+void application::dispatch_request(const request & req, response & res)
+{
+    if (req.method() == "GET")
+    {
+        std::map<std::string, callback_func>::iterator i = get_map.find(req.url());
+        if (i!=get_map.end())
+            i->second(req, res);
+        else
+        {
+            //res.send_404(req.url());
+        }
+    }
+}
+
+void application::get(std::string what, callback_func cback)
+{
+    get_map[what] = cback;
+}
 
 void application::listen(short port)
 {
