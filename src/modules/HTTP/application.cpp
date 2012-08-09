@@ -85,7 +85,7 @@ void application::listen(short port)
 
     std::set<connection*> conns;
 
-    while (select(sel, 10000000), sel.count() && !quit_requested) //this should be a select;
+    while (select(sel, 10000000), sel.count() && quit_requested == 0) //this should be a select;
     {
         for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
         {
@@ -147,4 +147,10 @@ void application::listen(short port)
 
     for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
         delete *i;
+}
+
+
+void application::close()
+{
+    __sync_fetch_and_add(&quit_requested, 1);
 }

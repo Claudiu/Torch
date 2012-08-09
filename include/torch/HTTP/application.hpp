@@ -17,7 +17,7 @@ namespace Torch {
 		{
             public:
             typedef void (*callback_func)(const request &, response &);
-            bool quit_requested;
+            int quit_requested;
 
             protected:
             std::map<std::string, callback_func> get_map;
@@ -26,7 +26,7 @@ namespace Torch {
             friend class connection;
 
             public:
-            application() : quit_requested(false) { }
+            application() : quit_requested(0) { }
 			void get(std::string what, callback_func cback);
 			void put();
 			void post();
@@ -34,7 +34,7 @@ namespace Torch {
             static const short DEFAULT_PORT = 80;
 
 			void listen(short port = DEFAULT_PORT);
-            void close() { quit_requested = true; }
+            void close();
 		};
 	}
 }

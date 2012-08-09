@@ -3,10 +3,58 @@
 	{
 		"selected_items":
 		[
+			[
+				"acces",
+				"accessLogFile"
+			],
+			[
+				"singl",
+				"singleton_holder"
+			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "src/modules/HTTP/application.cpp",
+			"settings":
+			{
+				"buffer_size": 4484,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "include/torch/HTTP/application.hpp",
+			"settings":
+			{
+				"buffer_size": 843,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/modules/log.cpp",
+			"settings":
+			{
+				"buffer_size": 3051,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "include/torch/log.hpp",
+			"settings":
+			{
+				"buffer_size": 1006,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "examples/test/main.cpp",
+			"settings":
+			{
+				"buffer_size": 894,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -32,21 +80,28 @@
 	},
 	"file_history":
 	[
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/HTTP/request.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/HTTP/application.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/examples/test/main.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Sockets/socket.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/HTTP/request.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/HTTP/Response/response.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Util/exception.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/exception.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/CMakeLists.txt",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/singleton.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/log.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/HTTP/Response/response.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Logs/log.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Logs/log.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/HTTP/application.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/util.hpp",
 		"/C/Users/Nandor/Documents/vmshare/torch/torch.sublime-project",
 		"/C/Users/Nandor/Documents/vmshare/id_rsa.pub",
 		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/logger.hpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/CMakeLists.txt",
-		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/exception.hpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/HTTP/application.cpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Util/exception.cpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Sockets/socket.cpp",
 		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Sockets/socket.hpp",
 		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Util/logger.cpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/examples/test/main.cpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/singleton.hpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/util.hpp",
 		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Logs/logger.cpp",
-		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/HTTP/application.hpp",
 		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Logs/logger.hpp",
 		"/C/Users/Nandor/Documents/vmshare/torch/examples/test/CMakeLists.txt",
 		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Sockets/select.cpp",
@@ -79,6 +134,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"close_logs"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -96,8 +152,146 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/modules/HTTP/application.cpp",
+					"settings":
+					{
+						"buffer_size": 4484,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4483,
+								4483
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2070.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "include/torch/HTTP/application.hpp",
+					"settings":
+					{
+						"buffer_size": 843,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								448,
+								448
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 90.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/modules/log.cpp",
+					"settings":
+					{
+						"buffer_size": 3051,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1666,
+								1666
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1695.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "include/torch/log.hpp",
+					"settings":
+					{
+						"buffer_size": 1006,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								952,
+								986
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 360.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "examples/test/main.cpp",
+					"settings":
+					{
+						"buffer_size": 894,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								507,
+								511
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 45.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -161,6 +355,6 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 159.0,
+	"side_bar_width": 191.0,
 	"status_bar_visible": true
 }
