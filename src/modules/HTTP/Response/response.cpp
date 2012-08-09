@@ -5,6 +5,32 @@ Torch::HTTP::response::response(socket * sock) {
 	this->sock = sock;
 }
 
+void Torch::HTTP::response::redirect(std::string to, short code) {
+	std::stringstream temp;
+
+	switch(code) {
+		case 307: 
+			temp << "HTTP/1.1 307 Temporary Redirect\n";
+			break;
+		default:
+			temp << "HTTP/1.1 307 Temporary Redirect\n";
+	}
+
+	temp << "Location: " << to << "\n\n";
+	
+	std::string t = temp.str();
+	const char * kitty = t.c_str();
+
+	size_t kitty_tail_length = strlen(kitty); 
+	uint8_t * rez = new uint8_t[kitty_tail_length];
+
+	memcpy(rez, kitty, kitty_tail_length);
+
+	log::inst().notice("Sending HTTP response back.");
+
+	this->sock->queue_for_writing(rez, kitty_tail_length);
+}
+
 void Torch::HTTP::response::send(std::string what, short code) {
 	std::stringstream temp;
 

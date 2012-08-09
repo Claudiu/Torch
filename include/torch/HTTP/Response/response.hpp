@@ -23,6 +23,8 @@ namespace Torch {
         public:
             response(socket*);
             void send(std::string, short code = 200);
+            void redirect(std::string to, short code = HTTP_TEMPORARY_REDIRECT);
+            //void render(std::string);
     	};
 	}
 }
