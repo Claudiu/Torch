@@ -3,7 +3,7 @@
 
 #include <torch/http.hpp>
 #include <torch/sockets.hpp>
-#include <torch/logs.hpp>
+#include <torch/log.hpp>
 #include <set>
 #include <string.h>
 #include <sstream>

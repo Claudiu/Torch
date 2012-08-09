@@ -32,7 +32,7 @@ void Torch::HTTP::response::send(std::string what, short code) {
 
 	memcpy(rez, kitty, kitty_tail_length);
 
-	Torch::toLog("Sending HTTP response back.");
+	log::inst().notice("Sending HTTP response back.");
 
 	this->sock->queue_for_writing(rez, kitty_tail_length);
 }
