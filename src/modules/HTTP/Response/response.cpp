@@ -1,23 +1,27 @@
 #include <torch/HTTP/Response/response.hpp>
 #include <torch/sockets.hpp>
+#include <torch/log.hpp>
 
-Torch::HTTP::response::response(socket * sock) {
-	this->sock = sock;
-	this->setServerName("Torch");
-	this->setLocation("");
+using namespace Torch;
+using namespace Torch::HTTP;
+using namespace Torch::Sockets;
+
+Response::Response(Socket * s) : sock(s) {
+	setServerName("Torch");
+	setLocation("");
 }
 
-void Torch::HTTP::response::redirect(std::string to, short code) {
-	this->setLocation(to);
-	this->send(code);
+void Response::redirect(std::string to, short code) {
+	setLocation(to);
+	send(code);
 }
 
 
-void Torch::HTTP::response::send(std::string what) {
-	this->send(HTTP_OK, what);
+void Response::send(std::string what) {
+	send(HTTP_OK, what);
 }
 
-void Torch::HTTP::response::send(short code, std::string what) {
+void Response::send(short code, std::string what) {
 	std::stringstream temp;
 
     static std::map<short, std::string> * codes = NULL;
@@ -36,11 +40,11 @@ void Torch::HTTP::response::send(short code, std::string what) {
 	if(what.length() != 0)
 		temp << "Content-Type: text/html\n";
 
-	if(!this->getLocation().empty())
-		temp << "Location: " << this->getLocation() << "\n";
+	if(!getLocation().empty())
+		temp << "Location: " << getLocation() << "\n";
 
-	if(!this->getServerName().empty())
-		temp << "Server: " << this->getServerName() << "\n";
+	if(!getServerName().empty())
+		temp << "Server: " << getServerName() << "\n";
 	
 	temp << "Content-Length: " << what.length() << "\n";
 	temp << "Connection: close\n";
@@ -55,7 +59,7 @@ void Torch::HTTP::response::send(short code, std::string what) {
 
 	memcpy(rez, kitty, kitty_tail_length);
 
-	log::inst().notice("Sending HTTP response back.");
+	Log::inst().notice("Sending HTTP Response back.");
 
-	this->sock->queue_for_writing(rez, kitty_tail_length);
+	sock->queueForWriting(rez, kitty_tail_length);
 }

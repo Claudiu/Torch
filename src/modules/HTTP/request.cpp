@@ -1,10 +1,11 @@
 #include <torch/http.hpp>
+#include <torch/log.hpp>
 #include <sstream>
 
 using namespace Torch;
 using namespace Torch::HTTP;
 
-request::request(const std::string & data)
+Request::Request(const std::string & data)
 {
     std::stringstream s(data);
     s>>_method>>_url>>_version;
@@ -26,5 +27,5 @@ request::request(const std::string & data)
     //for (int i = 0; i<_headers.size(); i++)
       //  msg += "header: \"" + _headers[i] + "\"";
 
-    log::inst().access(msg.c_str());
+    Log::inst().access(msg.c_str());
 }

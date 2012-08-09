@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include <torch/http.hpp>
-#include <torch/sockets.hpp>
+#include <torch/Sockets.hpp>
 #include <torch/util.hpp>
 #include <torch/log.hpp>
 
@@ -15,43 +15,43 @@ using namespace Torch::Sockets;
 
 namespace Torch{
     namespace HTTP {
-        class connection //this should parse http requests and send them to a function of application to dispatch them 
+        class Connection //this should parse http requests and send them to a function of Application to dispatch them 
             {
                 private:
-                socket * sock;
-                application * app;
+                Socket * sock;
+                Application * app;
 
                 public:
-                socket * get_socket() { return sock; }
+                Socket * getSocket() { return sock; }
                 
-                connection(socket * s, application * a) : sock(s), app(a) {
+                Connection(Socket * s, Application * a) : sock(s), app(a) {
                 }
                 
-                void read_stuff()
+                void readStuff()
                 {
                     uint8_t * b = new uint8_t[512];
                     ssize_t s = sock->read(b, 511);
                     if (!s)
                     {
                         delete[] b;
-                        throw string_exception("Connection closed");
+                        throw StringException("Connection closed");
                     }
                     b[s] = '\0';
-                    request req(std::string((char*)b));
+                    Request req(std::string((char*)b));
                     delete[] b;
 
-                    response res(sock);
-                    app->dispatch_request(req, res);
+                    Response res(sock);
+                    app->dispatchRequest(req, res);
                 }
                 
-                ~connection() {
+                ~Connection() {
                     delete sock;
                 }
             };
         }
 }
 
-void application::dispatch_request(const request & req, response & res)
+void Application::dispatchRequest(const Request & req, Response & res)
 {
     if (req.method() == "GET")
     {
@@ -65,92 +65,112 @@ void application::dispatch_request(const request & req, response & res)
     }
 }
 
-void application::get(std::string what, callback_func cback)
+void Application::get(std::string what, callback_func cback)
 {
     get_map[what] = cback;
 }
 
-void application::listen(short port)
+void Application::listen(short port)
 {
-    select_struct sel;
+    SelectSet sel;
 
-    std::vector<socket*> l = socket::tcp_listeners_all_interfaces(port);
-    if (l.empty())
-        throw string_exception("Could not bind to any interface");
-    for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
+    std::vector<Socket*> l = Socket::tcpListenersAllInterfaces(port);
+    while (l.empty())
     {
-        (*i)->set_blocking(false);
-        sel.insert_socket(*i, select_struct::read);
+        Log::inst().error("Could not bind to any interface. Sleeping 10 seconds");
+        sleep(10);
+        l = Socket::tcpListenersAllInterfaces(port);
     }
 
-    std::set<connection*> conns;
-
-    while (select(sel, 10000000), sel.count() && quit_requested == 0) //this should be a select;
+    for (std::vector<Socket*>::iterator i = l.begin(); i!=l.end(); i++)
     {
-        for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
+        (*i)->setBlocking(false);
+        sel.insertSocket(*i, SelectSet::read);
+    }
+
+    std::set<Connection*> conns;
+
+    while (select(sel, 10000000), (sel.count() && !quit_requested))
+    {
+        for (std::vector<Socket*>::iterator i = l.begin(); i!=l.end(); i++)
         {
-            socket * ls = *i;
+            Socket * ls = *i;
             try
             {
-                if (sel.can_read(ls))
+                if (sel.canRead(ls))
                 {
-                    socket * s = ls->accept();
-                    s->set_blocking(false);
-                    sel.insert_socket(s, select_struct::read | select_struct::write);
-                    conns.insert(new connection(s, this));
+                    Socket * s = ls->accept();
+                    s->setBlocking(false);
+                    sel.insertSocket(s, SelectSet::read | SelectSet::write);
+                    conns.insert(new Connection(s, this));
                 }
             } 
-            catch (const socket_exception & ex)
+            catch (const SocketException & ex)
             {
-                if (!ex.is_eagain())
+                if (!ex.isEAGAIN())
                     throw ex;
             } 
         }
 
-        std::set<connection*> remlist;
-        for (std::set<connection*>::iterator i = conns.begin(); i!=conns.end(); i++)
+        std::set<Connection*> remlist;
+        for (std::set<Connection*>::iterator i = conns.begin(); i!=conns.end(); i++)
         {
-            connection * c = *i;
-            socket * s = c->get_socket();
+            Connection * c = *i;
+            Socket * s = c->getSocket();
             bool err = false;
             try {
-                if (sel.can_read(s))
-                    c->read_stuff();
-                if (sel.can_write(s))
-                    s->write_from_queue();
-                sel.insert_socket(s, select_struct::read | (( s->write_queue_empty())?0:select_struct::write));
+                if (sel.canRead(s))
+                    c->readStuff();
+                if (sel.canWrite(s))
+                    s->writeFromQueue();
+                int f;
+                sel.insertSocket(s, f = (SelectSet::read | 
+                    ((s->writeQueueEmpty()) ? 0 : SelectSet::write))
+                );
             }
-            catch (const socket_exception & ex)
+            catch (const SocketException & ex)
             {
-                if (!ex.is_eagain())
+                if (!ex.isEAGAIN())
                 {
-                    log::inst().error(ex.what());
+                    Log::inst().error(ex.what());
                     err = true;
                 }
             }
             catch (const std::exception & ex)
             {
-                log::inst().error(ex.what());
+                Log::inst().error(ex.what());
                 err = true;
             }
             if (err)
             {
-                sel.remove_socket(c->get_socket());
+                sel.removeSocket(s);
                 remlist.insert(c);
                 delete c;
             }
         }
 
-        for (std::set<connection*>::iterator i = remlist.begin(); i!=remlist.end(); i++)
+        for (std::set<Connection*>::iterator i = remlist.begin(); i!=remlist.end(); i++)
             conns.erase(*i);
+
+        if (quit_requested)
+            break;
     }
 
-    for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
+    for (std::set<Connection*>::iterator i = conns.begin(); i!=conns.end(); i++)
+        delete *i;
+
+    for (std::vector<Socket*>::iterator i = l.begin(); i!=l.end(); i++)
         delete *i;
 }
 
 
-void application::close()
+void Application::close()
 {
-    __sync_fetch_and_add(&quit_requested, 1);
+//    __sync_fetch_and_add(&quit_requested, 1); so not necessary.
+//    assignment is atomic for ints. 
+//    and even if it wasn't, it wouldn't matter since
+//    1) we are not doing this from another thread, we are doing it from
+//    an interrupt handler. select() being a syscall will only return
+//    after and only after the handler finishes and will set errno to EINTR
+    quit_requested = 1;
 }

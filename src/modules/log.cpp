@@ -7,7 +7,7 @@
 
 using namespace Torch;
 
-log::log() : use_stdout(true), append(false)
+Log::Log() : use_stdout(true), append(false)
 {
 	memset(logs, 0, sizeof(logs));
 
@@ -18,12 +18,12 @@ log::log() : use_stdout(true), append(false)
 	log_names[LOG_CLIENT] = "./logs/client.log";
 }
 
-log::~log()
+Log::~Log()
 {
-	close_logs();
+	closeLogs();
 }
 
-void log::error(const char* fmt, ...)
+void Log::error(const char* fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -31,7 +31,7 @@ void log::error(const char* fmt, ...)
 	va_end(ap);
 }
 
-void log::warn(const char* fmt, ...)
+void Log::warn(const char* fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -39,7 +39,7 @@ void log::warn(const char* fmt, ...)
 	va_end(ap);
 }
 
-void log::notice(const char* fmt, ...)
+void Log::notice(const char* fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -47,7 +47,7 @@ void log::notice(const char* fmt, ...)
 	va_end(ap);
 }
 
-void log::access(const char* fmt, ...)
+void Log::access(const char* fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -55,7 +55,7 @@ void log::access(const char* fmt, ...)
 	va_end(ap);
 }
 
-void log::client(const char* fmt, ...)
+void Log::client(const char* fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
@@ -63,7 +63,7 @@ void log::client(const char* fmt, ...)
 	va_end(ap);
 }
 
-void log::print(log_level lvl, const char* fmt, va_list ap)
+void Log::print(log_level lvl, const char* fmt, va_list ap)
 {	
 	char *buf, *tmp;
 	int size = 100, r;
@@ -91,7 +91,7 @@ void log::print(log_level lvl, const char* fmt, va_list ap)
 
 	if (buf)
 	{
-		std::string timestamp = get_timestamp();
+		std::string timestamp = getTimestamp();
 		const char* level_name[] = {
 			"\033[31mERROR",
 			"\033[33mWARNING",
@@ -112,7 +112,7 @@ void log::print(log_level lvl, const char* fmt, va_list ap)
 	}
 }
 
-void log::open_logs()
+void Log::openLogs()
 {
 	for (int i = 0; i < LOG_NUM; ++i)
 	{
@@ -124,13 +124,13 @@ void log::open_logs()
 		logs[i] = fopen(log_names[i].c_str(), append ? "a" : "w");
 		if (!logs[i]) 
 		{
-			throw string_exception("Cannot open log \"") << 
+			throw StringException("Cannot open log \"") << 
 				  log_names[i] << "\"";
 		}
 	}
 }
 
-void log::close_logs()
+void Log::closeLogs()
 {
 	for (size_t i = 0; i < LOG_NUM; ++i)
 	{
@@ -142,7 +142,7 @@ void log::close_logs()
 	}
 }
 
-void log::set_log_file(log_level lvl, const std::string& file)
+void Log::setLogFile(log_level lvl, const std::string& file)
 {
 	assert(lvl < LOG_NUM);
 	if (log_names[lvl] != file)
@@ -155,24 +155,24 @@ void log::set_log_file(log_level lvl, const std::string& file)
 		logs[lvl] = fopen(file.c_str(), append ? "a" : "w");
 		if (!logs[lvl])
 		{
-			throw string_exception("Cannot open log \"") << file << "\"";
+			throw StringException("Cannot open log \"") << file << "\"";
 		}
 	}
 
 	log_names[lvl] = file;
 }
 
-void log::set_use_stdout(bool b)
+void Log::setUseStdout(bool b)
 {
 	use_stdout = b;
 }
 
-void log::set_append(bool b)
+void Log::setAppend(bool b)
 {
 	append = b;
 }
 
-std::string log::get_timestamp()
+std::string Log::getTimestamp()
 {
 	time_t rawtime;
 	struct tm * tm;

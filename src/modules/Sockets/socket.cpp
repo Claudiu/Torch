@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/socket.h>
+#include <sys/Socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -14,34 +14,34 @@
 
 #include <sstream>
 
-#include <torch/sockets.hpp>
-#include <torch/log.hpp>
+#include <torch/Sockets.hpp>
+#include <torch/Log.hpp>
 #include <torch/util.hpp>
 
 
 using namespace Torch::Sockets;
 
-const char * socket_exception::what() const throw() {
+const char * SocketException::what() const throw() {
     return strerror(err);
 }
 
-bool socket_exception::is_eagain() const {
+bool SocketException::isEAGAIN() const {
     return ((err == EAGAIN) || (err == EWOULDBLOCK));
 }
 
-socket::socket(int filedes) : fd(filedes), woff(0)
+Socket::Socket(int filedes) : fd(filedes), woff(0)
 {
     
 }
 
-socket::~socket()
+Socket::~Socket()
 {
     close(fd);
     for (std::list< std::pair<uint8_t *, size_t> >::iterator i = wq.begin(); i!=wq.end(); i++) //the reason why C++11's auto keyword would be awesome
         delete[] i->first;
 }
 
-void socket::set_blocking(bool blocking)
+void Socket::setBlocking(bool blocking)
 {
     if (blocking)
 		fcntl(fd, F_SETFL, 0);
@@ -49,28 +49,28 @@ void socket::set_blocking(bool blocking)
 		fcntl(fd, F_SETFL, O_NONBLOCK);
 }
 
-bool socket::blocking()
+bool Socket::blocking()
 {
     return (!(fcntl(fd, F_GETFL) & O_NONBLOCK));
 }
 
-ssize_t socket::write(uint8_t * buf, size_t size)
+ssize_t Socket::write(uint8_t * buf, size_t size)
 {
     ssize_t r = send(fd, buf, size, 0);
     if (r == -1)
-        throw socket_exception(errno);
+        throw SocketException(errno);
     return r;
 }
 
-ssize_t socket::read(uint8_t * buf, size_t size)
+ssize_t Socket::read(uint8_t * buf, size_t size)
 {
     ssize_t r = recv(fd, buf, size, 0);
     if (r == -1)
-        throw socket_exception(errno);
+        throw SocketException(errno);
     return r;
 }
 
-bool socket::can_read()
+bool Socket::canRead()
 {
     struct pollfd p;
     p.fd = fd;
@@ -80,7 +80,7 @@ bool socket::can_read()
     return (p.revents & POLLIN) != 0;
 }
 
-bool socket::can_write()
+bool Socket::canWrite()
 {
     struct pollfd p;
     p.fd = fd;
@@ -90,7 +90,7 @@ bool socket::can_write()
     return (p.revents & POLLOUT) != 0;
 }
 
-bool socket::error()
+bool Socket::error()
 {
     struct pollfd p;
     p.fd = fd;
@@ -100,35 +100,35 @@ bool socket::error()
     return (p.revents & POLLERR) != 0;
 }
 
-bool socket::can_accept()
+bool Socket::canAccept()
 {
-    return can_read();
+    return canRead();
 }
 
-ssize_t socket::read_peek(uint8_t * buf, size_t size)
+ssize_t Socket::readPeek(uint8_t * buf, size_t size)
 {
    ssize_t r = recv(fd, buf, size, MSG_PEEK);
    if (r == -1)
-       throw socket_exception(errno);
+       throw SocketException(errno);
    return r;
 }
 
-Torch::Sockets::socket * socket::accept()
+Torch::Sockets::Socket * Socket::accept()
 {
     struct sockaddr_storage ai;
     socklen_t s = sizeof(ai);
     int res = ::accept(fd, (struct sockaddr*)&ai, &s);
     if (res == -1)
-        throw socket_exception(errno);
-    return new socket(res);
+        throw SocketException(errno);
+    return new Socket(res);
 }
 
-void socket::queue_for_writing(uint8_t * buf, size_t size)
+void Socket::queueForWriting(uint8_t * buf, size_t size)
 {
     wq.push_back(std::make_pair(buf, size));
 }
 
-void socket::write_from_queue()
+void Socket::writeFromQueue()
 {
     try {
         while (!wq.empty())
@@ -150,15 +150,15 @@ void socket::write_from_queue()
                 woff = 0;
             } else break;
         }
-    } catch(socket_exception ex) {
-        if (!ex.is_eagain())
+    } catch(SocketException ex) {
+        if (!ex.isEAGAIN())
             throw ex;
     }
 }
 
-std::vector<Torch::Sockets::socket*> socket::tcp_listeners_all_interfaces(short port)
+std::vector<Torch::Sockets::Socket*> Socket::tcpListenersAllInterfaces(short port)
 {
-    std::vector<socket*> v;
+    std::vector<Socket*> v;
     
 
     struct addrinfo hints, *servinfo, *p;
@@ -173,30 +173,30 @@ std::vector<Torch::Sockets::socket*> socket::tcp_listeners_all_interfaces(short 
     oss<<port;
 
     if ((rv = getaddrinfo(NULL, oss.str().c_str(), &hints, &servinfo)) != 0) {
-        throw Torch::string_exception(gai_strerror(rv));
+        throw Torch::StringException(gai_strerror(rv));
     }
 
     for(p = servinfo; p != NULL; p = p->ai_next) {
         int sockfd;
-        if (((sockfd = ::socket(p->ai_family, p->ai_socktype, p->ai_protocol)),sockfd) == -1) {
-            log::inst().warn("socket() failed \"%d\"", errno);
+        if (((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)),sockfd) == -1) {
+            Log::inst().warn("socket() failed \"%s\"", strerror(errno));
             continue;
 	        }
 
         if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-            log::inst().warn("bind() failed \"%d\"", errno);
+            Log::inst().warn("bind() failed \"%s\"", strerror(errno));
             close(sockfd);
             continue;
         }
 
         if (listen(sockfd, SOMAXCONN))
         {
-            log::inst().warn("listen() failed \"%d\"", errno);
+            Log::inst().warn("listen() failed \"%s\"", strerror(errno));
             close(sockfd);
             continue;
         }
         
-        v.push_back(new socket(sockfd));
+        v.push_back(new Socket(sockfd));
     }
 
     freeaddrinfo(servinfo);

@@ -4,29 +4,27 @@
 #include <string>
 #include <map>
 
-
-
 namespace Torch {
 	namespace HTTP {
         
-        class request;
-        class response;
-        class connection;
+        class Request;
+        class Response;
+        class Connection;
 
-		class application
+		class Application
 		{
             public:
-            typedef void (*callback_func)(const request &, response &);
-            int quit_requested;
+            typedef void (*callback_func)(const Request &, Response &);
+            volatile int quit_requested;
 
             protected:
             std::map<std::string, callback_func> get_map;
 
-            void dispatch_request(const request &, response &);
-            friend class connection;
+            void dispatchRequest(const Request &, Response &);
+            friend class Connection;
 
             public:
-            application() : quit_requested(0) { }
+            Application() : quit_requested(0) { }
 			void get(std::string what, callback_func cback);
 			void put();
 			void post();

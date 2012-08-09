@@ -6,7 +6,7 @@
 
 namespace Torch {
     namespace HTTP {
-        class request 
+        class Request 
         {
             protected:
             std::string _method, _url, _version;
@@ -15,10 +15,10 @@ namespace Torch {
             public:
             const std::string & method() const { return _method; }
             const std::string & url() const { return _url; }
-            const std::string & http_version() const { return _version; }
+            const std::string & httpVersion() const { return _version; }
             const std::vector<std::string> headers() const { return _headers; }
 
-            request(const std::string & data);
+            Request(const std::string & data);
         };
     }
 }

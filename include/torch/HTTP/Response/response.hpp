@@ -1,20 +1,17 @@
 #ifndef _HTTP_RESPONSE_H
 #define _HTTP_RESPONSE_H
 
-#include <torch/http.hpp>
-#include <torch/sockets.hpp>
-#include <torch/log.hpp>
+#include <torch/HTTP/headers.hpp>
 #include <set>
 #include <string.h>
 #include <sstream>
 #include <stdio.h>
 
-using namespace Torch;
-using namespace Torch::HTTP;
-using namespace Torch::Sockets;
-
-
 namespace Torch {
+    namespace Sockets {
+        class Socket;
+    }
+
 	namespace HTTP {
 
         struct sHTTP_PARAMS {
@@ -23,12 +20,12 @@ namespace Torch {
             std::string location;
         };
 
-        class response
+        class Response
         {
         private:
-        	socket * sock;
+        	Sockets::Socket * sock;
         public:
-            response(socket*);
+            Response(Sockets::Socket *);
 
             sHTTP_PARAMS header;
             
@@ -36,11 +33,11 @@ namespace Torch {
             void send(short code = HTTP_OK, std::string what = "");
             void send(std::string what = "");
 
-            std::string getServerName()          {return this->header.server_name;}
-            void setServerName(std::string name) {this->header.server_name = name;}
+            std::string getServerName()          {return header.server_name;}
+            void setServerName(std::string name) {header.server_name = name;}
 
-            std::string getLocation()          {return this->header.location;}
-            void setLocation(std::string name) {this->header.location = name;}
+            std::string getLocation()          {return header.location;}
+            void setLocation(std::string name) {header.location = name;}
 
             void redirect(std::string to, short code = HTTP_TEMPORARY_REDIRECT);
             //void render(std::string);

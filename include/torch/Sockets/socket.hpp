@@ -9,19 +9,17 @@
 
 namespace Torch {
     namespace Sockets {
-        class socket_exception : public std::exception
+        class SocketException : public std::exception
         {
             int err;
             public:
-            socket_exception(int e) : err(e) {};
-            socket_exception(const socket_exception & o) : err(o.err) {}
-            bool is_eagain() const;
+            SocketException(int e) : err(e) {};
+            SocketException(const SocketException & o) : err(o.err) {}
+            bool isEAGAIN() const;
             const char * what() const throw();
         };
     
-        struct select_struct;
-
-        class socket
+        class Socket
         {
             protected:
             int fd;
@@ -29,30 +27,30 @@ namespace Torch {
             std::list< std::pair<uint8_t *, size_t> > wq;
 
             public:
-            socket(int fd);
-            ~socket();
+            Socket(int fd);
+            ~Socket();
 
-            void set_blocking(bool blocking);
+            void setBlocking(bool blocking);
             bool blocking();
 
             bool error();
-            bool can_read();
-            bool can_write();
-            bool can_accept();
+            bool canRead();
+            bool canWrite();
+            bool canAccept();
 
-            ssize_t read_peek(uint8_t * buf, size_t size);
+            ssize_t readPeek(uint8_t * buf, size_t size);
 
             ssize_t read(uint8_t * buf, size_t size);
             ssize_t write(uint8_t * buf, size_t size);
-            socket * accept();
+            Socket * accept();
 
-            void queue_for_writing(uint8_t * buf, size_t size); //feed me new-allocated pointers and I'll handle deleting them
-            void write_from_queue();
-            bool write_queue_empty() { return wq.empty(); }
+            void queueForWriting(uint8_t * buf, size_t size); //feed me new-allocated pointers and I'll handle deleting them
+            void writeFromQueue();
+            bool writeQueueEmpty() { return wq.empty(); }
 
-            static std::vector<socket*> tcp_listeners_all_interfaces(short port);
+            static std::vector<Socket*> tcpListenersAllInterfaces(short port);
 
-            int file_descriptor() { return fd; }
+            int fileDescriptor() { return fd; }
         };
     }
 }

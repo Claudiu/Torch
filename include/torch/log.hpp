@@ -7,7 +7,7 @@
 #include <torch/util.hpp>
 
 namespace Torch {
-	class log;
+	class Log;
 
 	enum log_level
 	{
@@ -19,9 +19,9 @@ namespace Torch {
 		LOG_NUM
 	};
 
-    class log : public singleton<log>
+    class Log : public Singleton<Log>
     {
-    	friend class singleton<log>;
+    	friend class Singleton<Log>;
     	friend class log_stream;
 
     	std::string log_names[LOG_NUM];
@@ -31,14 +31,14 @@ namespace Torch {
     	bool append;
 
     	public:
-    	virtual ~log();
+    	virtual ~Log();
 
-    	void set_log_file(log_level lvl, const std::string& str);
-    	void set_use_stdout(bool b);
-    	void set_append(bool b);
+    	void setLogFile(log_level lvl, const std::string& str);
+    	void setUseStdout(bool b);
+    	void setAppend(bool b);
 
-    	void open_logs();
-    	void close_logs();
+    	void openLogs();
+    	void closeLogs();
 
     	void error(const char* fmt, ...);
     	void client(const char* fmt, ...);
@@ -47,10 +47,10 @@ namespace Torch {
     	void access(const char* fmt, ...);
 
    		private:
-    	log();
+    	Log();
 
     	void print(log_level lvl, const char* fmt, va_list list);
-    	std::string get_timestamp();
+    	std::string getTimestamp();
     };
 
 }
