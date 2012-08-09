@@ -54,6 +54,14 @@
 				"buffer_size": 894,
 				"line_ending": "Unix"
 			}
+		},
+		{
+			"file": "src/modules/Util/exception.cpp",
+			"settings":
+			{
+				"buffer_size": 303,
+				"line_ending": "Windows"
+			}
 		}
 	],
 	"build_system": "",
@@ -152,7 +160,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 5,
 			"sheets":
 			[
 				{
@@ -288,6 +296,32 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 45.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/modules/Util/exception.cpp",
+					"settings":
+					{
+						"buffer_size": 303,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								302,
+								302
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
