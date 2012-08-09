@@ -19,12 +19,12 @@ request::request(const std::string & data)
     }
 
     std::string msg;
-    msg += "method: \"" + _method + "\"";
-    msg += "uri: \"" + _url + "\"";
-    msg += "version: \"" + _version + "\"";
+    msg += "Client requested using \"" + _method + "\"";
+    msg += " \"" + _url + "\"";
+    //msg += "version: \"" + _version + "\"";
 
-    for (int i = 0; i<_headers.size(); i++)
-        msg += "header: \"" + _headers[i] + "\"";
+    //for (int i = 0; i<_headers.size(); i++)
+      //  msg += "header: \"" + _headers[i] + "\"";
 
     log::inst().access(msg.c_str());
 }

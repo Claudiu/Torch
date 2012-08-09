@@ -16,13 +16,32 @@ using namespace Torch::Sockets;
 
 namespace Torch {
 	namespace HTTP {
+
+        struct sHTTP_PARAMS {
+            short code;
+            std::string server_name;
+            std::string location;
+        };
+
         class response
         {
         private:
         	socket * sock;
         public:
             response(socket*);
-            void send(std::string, short code = 200);
+
+            sHTTP_PARAMS header;
+            
+            // send overloads
+            void send(short code = HTTP_OK, std::string what = "");
+            void send(std::string what = "");
+
+            std::string getServerName()          {return this->header.server_name;}
+            void setServerName(std::string name) {this->header.server_name = name;}
+
+            std::string getLocation()          {return this->header.location;}
+            void setLocation(std::string name) {this->header.location = name;}
+
             void redirect(std::string to, short code = HTTP_TEMPORARY_REDIRECT);
             //void render(std::string);
     	};

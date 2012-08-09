@@ -60,7 +60,7 @@ void application::dispatch_request(const request & req, response & res)
             i->second(req, res);
         else
         {
-            res.send(std::string("<h1>404</h1> <p>Meow. Had problems catching your mouse: \"" + req.url() + "\""));
+            //res.send(std::string("<!DOCTYPE HTML> <html lang=\"en-US\"> <head> <meta charset=\"UTF-8\"> <title>Torch: Page Not Found</title> <style type=\"text/css\"> body {font-family: Arial, Helvetica, sans-serif; font-size: 13px; background-color: #EBD9ED; } h1 {color: #641A67; font-family: Georgia; } .wrap {width: 500px; margin: 150px auto; border: 5px solid #e5cde8; padding: 50px; background-color: #f1e5f2; border-radius: 10px; } </style> </head> <body> <div class=\"wrap\"> <h1>Budi was here..now this page stinks.</h1> <p>Oh noes!</p> </div> </body> </html>"));
         }
     }
 }

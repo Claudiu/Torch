@@ -4,17 +4,19 @@
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 
+using namespace Torch::HTTP;
+
 namespace Routes {
-	void index(const Torch::HTTP::request & req, Torch::HTTP::response & res) {
+	void index(const request & req, response & res) {
         res.send(std::string("<h1>Torch is fucking awesome</h1><p>This is the first html test in history</p> <p>") + req.url() + "</p>");
 	}
 
-	void account(const Torch::HTTP::request & req, Torch::HTTP::response & res) {
+	void account(const request & req, response & res) {
         res.send(std::string("<h1>Bank Account</h1>") + req.url() + "</p>");
 	}
 
-	void redirect(const Torch::HTTP::request & req, Torch::HTTP::response & res) {
-		res.redirect("http://nasa.gov", 301);
+	void redirect(const request & req, response & res) {
+		res.redirect("http://feralhost.in/");
 	}
 };
 
@@ -38,9 +40,11 @@ int main(int argc, char const *argv[])
 		app.get("/account", &Routes::account);
 		app.get("/redirectme", &Routes::redirect);
 
+		log::inst().notice("Server running on port 8080");
+
         log::inst().close_logs();
 
-        app.listen(8080);
+        app.listen(4690);
 
 	} catch (std::exception & e) {
 		log::inst().error(e.what());
