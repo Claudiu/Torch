@@ -1,10 +1,13 @@
-#include <torch/http.hpp>
-#include <torch/sockets.hpp>
-#include <torch/logs.hpp>
+
 #include <set>
 #include <string.h>
 #include <sstream>
 #include <stdio.h>
+
+#include <torch/http.hpp>
+#include <torch/sockets.hpp>
+#include <torch/util.hpp>
+#include <torch/log.hpp>
 
 using namespace Torch;
 using namespace Torch::HTTP;
@@ -82,7 +85,7 @@ void application::listen(short port)
 
     std::set<connection*> conns;
 
-    while (select(sel, 10000000), sel.count()) //this should be a select;
+    while (select(sel, 10000000), sel.count() && !quit_requested) //this should be a select;
     {
         for (std::vector<socket*>::iterator i = l.begin(); i!=l.end(); i++)
         {
@@ -121,13 +124,13 @@ void application::listen(short port)
             {
                 if (!ex.is_eagain())
                 {
-                    Torch::toLog(ex.what());
+                    log::inst().error(ex.what());
                     err = true;
                 }
             }
             catch (const std::exception & ex)
             {
-                Torch::toLog(ex.what());
+                log::inst().error(ex.what());
                 err = true;
             }
             if (err)

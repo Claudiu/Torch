@@ -1,0 +1,166 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Nandor/Documents/vmshare/torch/torch.sublime-project",
+		"/C/Users/Nandor/Documents/vmshare/id_rsa.pub",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/logger.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/CMakeLists.txt",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/exception.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/HTTP/application.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Util/exception.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Sockets/socket.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Sockets/socket.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Util/logger.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/examples/test/main.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Util/singleton.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/util.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Logs/logger.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/HTTP/application.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/Logs/logger.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/examples/test/CMakeLists.txt",
+		"/C/Users/Nandor/Documents/vmshare/torch/src/modules/Sockets/select.cpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/include/torch/sockets.hpp",
+		"/C/Users/Nandor/Documents/vmshare/torch/.gitignore",
+		"/C/Users/Nandor/Documents/torch/src/modules/Logs/logs.cpp",
+		"/C/Users/Nandor/Documents/torch/include/torch/sockets.hpp",
+		"/C/Users/Nandor/Documents/torch/src/modules/HTTP/application.cpp",
+		"/C/Users/Nandor/Documents/torch/include/torch/Sockets/socket_win32.hpp",
+		"/C/Users/Nandor/Documents/torch/CMakeLists.txt",
+		"/C/Users/Nandor/Documents/torch/include/torch/Sockets/socket.hpp",
+		"/C/Users/Nandor/Documents/torch/src/modules/Sockets/socket_win32.cpp",
+		"/C/Users/Nandor/Documents/torch/src/modules/Sockets/select.cpp",
+		"/C/Users/Nandor/Documents/torch/.gitignore",
+		"/C/Users/Nandor/Documents/Visual Studio 2010/Projects/valkyrie/vlib/DictParser.cpp"
+	],
+	"find":
+	{
+		"height": 0.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/C/Users/Nandor/Documents/Visual Studio 2010/Projects/valkyrie/vlib/DictParser.cpp"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 159.0,
+	"status_bar_visible": true
+}

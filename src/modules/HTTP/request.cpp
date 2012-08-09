@@ -17,9 +17,14 @@ request::request(const std::string & data)
         if (ss.empty()) continue;
         _headers.push_back(ss);
     }
-    toLog(std::string("method: \"") + _method + "\"");
-    toLog(std::string("uri: \"") + _url + "\"");
-    toLog(std::string("version: \"") + _version + "\"");
+
+    std::string msg;
+    msg += "method: \"" + _method + "\"";
+    msg += "uri: \"" + _url + "\"";
+    msg += "version: \"" + _version + "\"";
+
     for (int i = 0; i<_headers.size(); i++)
-        toLog(std::string("header: \"") + _headers[i] + "\"");
+        msg += "header: \"" + _headers[i] + "\"";
+
+    log::inst().access(msg.c_str());
 }

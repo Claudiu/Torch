@@ -1,5 +1,3 @@
-#include <torch/sockets.hpp>
-#include <torch/logs.hpp>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -15,6 +13,11 @@
 #include <poll.h>
 
 #include <sstream>
+
+#include <torch/sockets.hpp>
+#include <torch/log.hpp>
+#include <torch/util.hpp>
+
 
 using namespace Torch::Sockets;
 
@@ -176,19 +179,19 @@ std::vector<Torch::Sockets::socket*> socket::tcp_listeners_all_interfaces(short 
     for(p = servinfo; p != NULL; p = p->ai_next) {
         int sockfd;
         if (((sockfd = ::socket(p->ai_family, p->ai_socktype, p->ai_protocol)),sockfd) == -1) {
-            Torch::toLog(std::string("WARNING: socket() failed \"") + strerror(errno) + "\"");
+            log::inst().warn("socket() failed \"%d\"", errno);
             continue;
 	        }
 
         if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-            Torch::toLog(std::string("WARNING: bind() failed \"") + strerror(errno) + "\"");
+            log::inst().warn("bind() failed \"%d\"", errno);
             close(sockfd);
             continue;
         }
 
         if (listen(sockfd, SOMAXCONN))
         {
-            Torch::toLog(std::string("WARNING: listen() failed \"") + strerror(errno) + "\"");
+            log::inst().warn("listen() failed \"%d\"", errno);
             close(sockfd);
             continue;
         }
