@@ -25,9 +25,10 @@
 #include <string.h>
 #include <sstream>
 #include <stdio.h>
+#include <unistd.h>
 
 #include <torch/http.hpp>
-#include <torch/Sockets.hpp>
+#include <torch/sockets.hpp>
 #include <torch/util.hpp>
 #include <torch/log.hpp>
 

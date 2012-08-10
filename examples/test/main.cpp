@@ -4,6 +4,8 @@
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 
+const short PORT = 80;
+
 using namespace Torch;
 using namespace Torch::HTTP;
 
@@ -43,11 +45,13 @@ int main(int argc, char const *argv[])
 		app.get("/account", &Routes::account);
 		app.get("/redirectme", &Routes::redirect);
 
-		Log::inst().notice("Server running on port 8080");
+		std::string msg;
+    	msg += "Server running on port" + PORT;
+		Log::inst().notice(msg.c_str());
 
         Log::inst().closeLogs();
 
-        app.listen(8080);
+        app.listen(PORT);
 
 	} catch (std::exception & e) {
 		Log::inst().error(e.what());

@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/Socket.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -36,8 +36,8 @@
 
 #include <sstream>
 
-#include <torch/Sockets.hpp>
-#include <torch/Log.hpp>
+#include <torch/sockets.hpp>
+#include <torch/log.hpp>
 #include <torch/util.hpp>
 
 
