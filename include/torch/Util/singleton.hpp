@@ -27,13 +27,13 @@
 namespace Torch
 {
 	template <class T>
-	class singleton_holder
+	class SingletonHolder
 	{
 		T * instance;
 
 		public:
-		singleton_holder() : instance(NULL) { }
-		virtual ~singleton_holder() 
+		SingletonHolder() : instance(NULL) { }
+		virtual ~SingletonHolder() 
 		{ 
 			if (instance) 
 			{
@@ -49,10 +49,10 @@ namespace Torch
 	};
 
 	template <class T>
-	class singleton
+	class Singleton
 	{
 		static T * instance;
-		static singleton_holder<T> holder;
+		static SingletonHolder<T> holder;
 
 		public:
 		static T& inst()
@@ -78,13 +78,13 @@ namespace Torch
 		}
 
 		protected:
-		singleton() { }
-		singleton(const singleton& s);
-		singleton& operator = (singleton& rhs);
+		Singleton() { }
+		Singleton(const Singleton & s);
+		Singleton& operator = (Singleton & rhs);
 	};
 
-	template<class T> singleton_holder<T> singleton<T>::holder;
-	template<class T> T* singleton<T>::instance = NULL;
+	template<class T> SingletonHolder<T> Singleton<T>::holder;
+	template<class T> T* Singleton<T>::instance = NULL;
 }
 
 #endif /*__SINGLETON_HPP__*/

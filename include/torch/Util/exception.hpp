@@ -28,20 +28,20 @@
 
 namespace Torch
 {
-    class string_exception : public std::exception
+    class StringException : public std::exception
     {
         private:
         std::string s;
         
         public:
-        string_exception(const std::string& str) throw() : s(str) {};
-        string_exception(const string_exception & o) throw() : s(o.s) {};
-        virtual ~string_exception() throw() { }
+        StringException(const std::string& str) throw() : s(str) {};
+        StringException(const StringException & o) throw() : s(o.s) {};
+        virtual ~StringException() throw() { }
 
         const char * what() const throw() { return s.c_str(); }
 
-        string_exception& operator << (int i);
-        string_exception& operator << (const std::string& s);
+        StringException & operator << (int i);
+        StringException & operator << (const std::string& s);
     };
 
 }

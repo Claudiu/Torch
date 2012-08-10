@@ -26,7 +26,7 @@
 
 using namespace Torch;
 
-string_exception& string_exception::operator << (int i)
+StringException & StringException::operator << (int i)
 {
 	std::stringstream ss;
 	ss << s << i;
@@ -34,7 +34,7 @@ string_exception& string_exception::operator << (int i)
 	return *this;
 }
 
-string_exception& string_exception::operator << (const std::string& str)
+StringException & StringException::operator << (const std::string& str)
 {
 	s += str;
 	return *this;
