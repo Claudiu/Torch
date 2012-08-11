@@ -22,5 +22,5 @@ cmake_install.cmake
 CMakeFiles
 CMakeCache.txt
 
-*sublime*
-
+torch.sublime-workspace
+torch.sublime-project
