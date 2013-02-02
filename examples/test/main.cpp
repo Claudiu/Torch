@@ -42,14 +42,12 @@ int main(int argc, char const *argv[])
 
 		signal(SIGINT, sigint);
 
+		app.staticDir = "static";
+
 		app.get("/", &Routes::index);
 		app.get("/account", &Routes::account);
 		app.get("/redirectme", &Routes::redirect);
 
-		std::string msg;
-    	msg += "Server running on port" + PORT;
-    	
-		Log::inst().notice(msg.c_str());
         Log::inst().closeLogs();
 
         app.listen(PORT);

@@ -30,7 +30,6 @@ using namespace Torch::Sockets;
 
 Response::Response(Socket * s) : sock(s) {
 	// Defaults
-
 	setServerName("Torch");
 }
 

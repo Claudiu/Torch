@@ -24,6 +24,7 @@
 #include <set>
 #include <string.h>
 #include <sstream>
+#include <fstream>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -85,9 +86,22 @@ void Application::dispatchRequest(const Request & req, Response & res)
             i->second(req, res);
         }
         else
-        {
-            res.send(404, "<!DOCTYPE HTML> <html lang=\"en-US\"> <head> <meta charset=\"UTF-8\"> <title>Torch: Page Not Found</title> <style type=\"text/css\"> body {font-family: Arial, Helvetica, sans-serif; font-size: 13px; background-color: #EBD9ED; } h1 {color: #641A67; font-family: Georgia; } .wrap {width: 500px; margin: 150px auto; border: 5px solid #e5cde8; padding: 50px; background-color: #f1e5f2; border-radius: 10px; } </style> </head> <body> <div class=\"wrap\"> <h1>Budi was here..now this page stinks.</h1> <p>Oh noes!</p> </div> </body> </html>");
-        }
+        {   
+            std::fstream file;
+            file.open(std::string(staticDir + req.url()).c_str()); // lazy way
+            
+            if(file.is_open() == true) 
+            {
+
+                std::string str((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+                res.send(str);
+
+            } else {
+                Log::inst().error("Got nothing to show for: %s", req.url().c_str());
+                res.send(404, ":(");
+            }
+        }         
     }
 }
 
@@ -115,6 +129,8 @@ void Application::listen(short port)
     }
 
     std::set<Connection*> conns;
+
+    Log::inst().notice("Server running on port %d", port);
 
     while (select(sel, 10000000), (sel.count() && !quit_requested))
     {

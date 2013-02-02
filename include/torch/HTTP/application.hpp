@@ -25,6 +25,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 namespace Torch {
 	namespace HTTP {
@@ -47,6 +48,9 @@ namespace Torch {
 
             public:
             Application() : quit_requested(0) { }
+
+            std::string staticDir;
+
 			void get(std::string what, callback_func cback);
 			void put();
 			void post();
