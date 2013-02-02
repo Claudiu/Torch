@@ -4,7 +4,7 @@
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 
-const short PORT = 80;
+const short PORT = 8080;
 
 using namespace Torch;
 using namespace Torch::HTTP;
@@ -15,6 +15,7 @@ namespace Routes {
 	}
 
 	void account(const Request & req, Response & res) {
+		res.setHeader("Content-Type", "application/json");
         res.send(std::string("<h1>Bank Account</h1>") + req.url() + "</p>");
 	}
 
@@ -24,7 +25,7 @@ namespace Routes {
 };
 
 // This is one of the worst hacks ever written by me
-// Why not do something like if (!signal_already_bound(SIGINT)) signal(SIGINT, sigint);
+// Why not do something like"Server running on port" if (!signal_already_bound(SIGINT)) signal(SIGINT, sigint);
 // in app.listen()?
 Torch::HTTP::Application app;
 void sigint(int)
@@ -47,8 +48,8 @@ int main(int argc, char const *argv[])
 
 		std::string msg;
     	msg += "Server running on port" + PORT;
+    	
 		Log::inst().notice(msg.c_str());
-
         Log::inst().closeLogs();
 
         app.listen(PORT);

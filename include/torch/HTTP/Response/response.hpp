@@ -28,6 +28,7 @@
 #include <string.h>
 #include <sstream>
 #include <stdio.h>
+#include <map>
 
 namespace Torch {
     namespace Sockets {
@@ -40,6 +41,9 @@ namespace Torch {
             short code;
             std::string server_name;
             std::string location;
+
+            std::map <std::string, std::string> items;
+            //HeaderMap items;
         };
 
         class Response
@@ -55,11 +59,34 @@ namespace Torch {
             void send(short code = HTTP_OK, std::string what = "");
             void send(std::string what = "");
 
-            std::string getServerName()          {return header.server_name;}
-            void setServerName(std::string name) {header.server_name = name;}
+            void setServerName(std::string name) {
+                setHeader("Server", name);
+            }
 
-            std::string getLocation()          {return header.location;}
-            void setLocation(std::string name) {header.location = name;}
+            bool HeaderExists(std::string what) {
+                std::map<std::string, std::string>::iterator it;
+                it = header.items.find(what);
+
+                if(it != header.items.end())
+                    return true;
+                else
+                    return false;
+            }
+
+            void setHeader(std::string what, std::string to);
+
+            std::string getLocation() {
+                if(HeaderExists("Location"))
+                    return header.location;
+                else {
+                    setHeader("Location", "/"); //TODO
+                    return getLocation();
+                }
+            }
+
+            void setLocation(std::string what) {
+                setHeader("Location", what);
+            }
 
             void redirect(std::string to, short code = HTTP_TEMPORARY_REDIRECT);
             //void render(std::string);

@@ -29,8 +29,9 @@ using namespace Torch::HTTP;
 using namespace Torch::Sockets;
 
 Response::Response(Socket * s) : sock(s) {
+	// Defaults
+
 	setServerName("Torch");
-	setLocation("");
 }
 
 void Response::redirect(std::string to, short code) {
@@ -41,6 +42,17 @@ void Response::redirect(std::string to, short code) {
 
 void Response::send(std::string what) {
 	send(HTTP_OK, what);
+}
+
+void Response::setHeader(std::string what, std::string to) {
+    std::map<std::string, std::string>::iterator it;
+    it = header.items.find(what);
+
+    if(it == header.items.end())
+        header.items.insert(std::make_pair(what, to));
+    else
+        it->second = to;
+
 }
 
 void Response::send(short code, std::string what) {
@@ -58,18 +70,16 @@ void Response::send(short code, std::string what) {
     }
 
 	temp << "HTTP/1.1 "<<code<<" "<<(*codes)[code]<<"\n";
-	
-	if(what.length() != 0)
-		temp << "Content-Type: text/html\n";
 
-	if(!getLocation().empty())
-		temp << "Location: " << getLocation() << "\n";
-
-	if(!getServerName().empty())
-		temp << "Server: " << getServerName() << "\n";
-	
 	temp << "Content-Length: " << what.length() << "\n";
-	temp << "Connection: close\n";
+
+	for (std::map<std::string, std::string>::iterator it = header.items.begin(); it != header.items.end(); ++it)
+		temp << it->first << ": " << it->second << "\n";
+
+	if(header.items.find("Connection") == header.items.end()) {
+		temp << "Connection: Close\n";
+	}
+
 	temp << "\n";
 	temp << what;
 

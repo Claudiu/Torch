@@ -79,11 +79,14 @@ void Application::dispatchRequest(const Request & req, Response & res)
     if (req.method() == "GET")
     {
         std::map<std::string, callback_func>::iterator i = get_map.find(req.url());
-        if (i!=get_map.end())
+        if (i!=get_map.end()) {
+            res.setLocation(req.url());
+            res.setHeader("Content-Type", "text/html");
             i->second(req, res);
+        }
         else
         {
-            //res.send(std::string("<!DOCTYPE HTML> <html lang=\"en-US\"> <head> <meta charset=\"UTF-8\"> <title>Torch: Page Not Found</title> <style type=\"text/css\"> body {font-family: Arial, Helvetica, sans-serif; font-size: 13px; background-color: #EBD9ED; } h1 {color: #641A67; font-family: Georgia; } .wrap {width: 500px; margin: 150px auto; border: 5px solid #e5cde8; padding: 50px; background-color: #f1e5f2; border-radius: 10px; } </style> </head> <body> <div class=\"wrap\"> <h1>Budi was here..now this page stinks.</h1> <p>Oh noes!</p> </div> </body> </html>"));
+            res.send(404, "<!DOCTYPE HTML> <html lang=\"en-US\"> <head> <meta charset=\"UTF-8\"> <title>Torch: Page Not Found</title> <style type=\"text/css\"> body {font-family: Arial, Helvetica, sans-serif; font-size: 13px; background-color: #EBD9ED; } h1 {color: #641A67; font-family: Georgia; } .wrap {width: 500px; margin: 150px auto; border: 5px solid #e5cde8; padding: 50px; background-color: #f1e5f2; border-radius: 10px; } </style> </head> <body> <div class=\"wrap\"> <h1>Budi was here..now this page stinks.</h1> <p>Oh noes!</p> </div> </body> </html>");
         }
     }
 }
