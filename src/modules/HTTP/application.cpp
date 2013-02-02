@@ -22,10 +22,10 @@
 
 
 #include <set>
-#include <string.h>
+#include <string>
 #include <sstream>
 #include <fstream>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 #include <torch/http.hpp>
@@ -105,7 +105,7 @@ void Application::dispatchRequest(const Request & req, Response & res)
     }
 }
 
-void Application::get(std::string what, callback_func cback)
+void Application::get(const std::string& what, callback_func cback)
 {
     get_map[what] = cback;
 }

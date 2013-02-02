@@ -21,7 +21,7 @@
 //
 
 
-#include <stdlib.h>
+#include <cstdlih>
 #include <unistd.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -31,7 +31,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <string.h>
+#include <string>
 #include <poll.h>
 
 #include <sstream>

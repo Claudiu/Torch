@@ -33,17 +33,17 @@ Response::Response(Socket * s) : sock(s) {
 	setServerName("Torch");
 }
 
-void Response::redirect(std::string to, short code) {
+void Response::redirect(const std::string& to, short code) {
 	setLocation(to);
 	send(code);
 }
 
 
-void Response::send(std::string what) {
+void Response::send(const std::string& what) {
 	send(HTTP_OK, what);
 }
 
-void Response::setHeader(std::string what, std::string to) {
+void Response::setHeader(const std::string& what, const std::string& to) {
     std::map<std::string, std::string>::iterator it;
     it = header.items.find(what);
 
@@ -54,21 +54,21 @@ void Response::setHeader(std::string what, std::string to) {
 
 }
 
-void Response::send(short code, std::string what) {
+void Response::send(short code, const std::string& what) {
 	std::stringstream temp;
 
-    static std::map<short, std::string> * codes = NULL;
+    static std::map<short, std::string> codes;
+
     if (!codes)
     {
-        codes = new std::map<short, std::string>;
-        (*codes)[200] = "OK";
-        (*codes)[307] = "Temporary Redirect";
-        (*codes)[404] = "Not Found";
-        (*codes)[418] = "I'm a teapot";
+        codes[200] = "OK";
+        codes[307] = "Temporary Redirect";
+        codes[404] = "Not Found";
+        codes[418] = "I'm a teapot ... wait what?";
 
     }
 
-	temp << "HTTP/1.1 "<<code<<" "<<(*codes)[code]<<"\n";
+	temp << "HTTP/1.1 "<<code<<" "<<codes[code]<<"\n";
 
 	temp << "Content-Length: " << what.length() << "\n";
 

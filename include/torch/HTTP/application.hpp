@@ -51,7 +51,7 @@ namespace Torch {
 
             std::string staticDir;
 
-			void get(std::string what, callback_func cback);
+			void get(const std::string& what, callback_func cback);
 			void put();
 			void post();
 

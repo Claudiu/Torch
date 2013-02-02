@@ -56,14 +56,14 @@ namespace Torch {
             sHTTP_PARAMS header;
             
             // send overloads
-            void send(short code = HTTP_OK, std::string what = "");
-            void send(std::string what = "");
+            void send(short code = HTTP_OK, const std::string& what = "");
+            void send(const std::string& what = "");
 
-            void setServerName(std::string name) {
+            void setServerName(const std::string& name) {
                 setHeader("Server", name);
             }
 
-            bool HeaderExists(std::string what) {
+            bool HeaderExists(const std::string& what) {
                 std::map<std::string, std::string>::iterator it;
                 it = header.items.find(what);
 
@@ -73,7 +73,7 @@ namespace Torch {
                     return false;
             }
 
-            void setHeader(std::string what, std::string to);
+            void setHeader(const std::string& what, const std::string& to);
 
             std::string getLocation() {
                 if(HeaderExists("Location"))
@@ -84,11 +84,11 @@ namespace Torch {
                 }
             }
 
-            void setLocation(std::string what) {
+            void setLocation(const std::string& what) {
                 setHeader("Location", what);
             }
 
-            void redirect(std::string to, short code = HTTP_TEMPORARY_REDIRECT);
+            void redirect(const std::string& to, short code = HTTP_TEMPORARY_REDIRECT);
             //void render(std::string);
     	};
 	}
