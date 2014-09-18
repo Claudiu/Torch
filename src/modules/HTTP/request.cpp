@@ -23,6 +23,7 @@
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 #include <sstream>
+#include <iostream>
 
 using namespace Torch;
 using namespace Torch::HTTP;

@@ -59,7 +59,7 @@ void Response::send(short code, const std::string& what) {
 
     static std::map<short, std::string> codes;
 
-    if (!codes)
+    if (!codes.size())
     {
         codes[200] = "OK";
         codes[307] = "Temporary Redirect";

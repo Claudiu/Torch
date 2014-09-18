@@ -26,6 +26,7 @@
 #include <cstdarg>
 #include <sstream>
 #include <torch/log.hpp>
+#include <iostream>
 
 using namespace Torch;
 
@@ -87,32 +88,35 @@ void Log::client(const char* fmt, ...)
 
 void Log::print(log_level lvl, const char* fmt, va_list ap)
 {	
-	char *buf, *tmp;
-	int size = 100, r;
+	std::string msg = "";
+	int size = 200, currentSize = size, r = 0;
+	char* buf = new char[size + 1];
 
 	assert(lvl < LOG_NUM);
 	
-	buf = new char[size + 1];
+	if (strlen(fmt) == 0)
+		return;
+
 	while (true) {
-		r = vsnprintf(buf, size, fmt, ap);
+		r = vsnprintf(buf, currentSize, fmt, ap);
 
-		if (-1 < r && r < size) {
+		if (r < size)
 			break;
+
+		if (r >= 0) {
+			delete[] buf;
+			currentSize += size;
+			buf = new char[currentSize + 1];
 		}
-
-		size = (r > -1) ? (r + 1) : (size <<= 1);
-		tmp = buf;
-
-		if (!(buf = new (std::nothrow) char[size + 1])) {
-			delete[] tmp;
-			return;
-		}
-
-		delete[] tmp;
+		else
+			break;
 	}	
 
-	if (buf)
-	{
+	if (buf) {
+		msg = buf;
+		delete[] buf;
+	}
+
 		std::string timestamp = getTimestamp();
 		const char* level_name[] = {
 			"\033[31mERROR",
@@ -124,14 +128,13 @@ void Log::print(log_level lvl, const char* fmt, va_list ap)
 
 		if (use_stdout)
 		{
-			printf("%s [%s] %s\033[0m\n", level_name[lvl], timestamp.c_str(), buf);
+			printf("%s [%s] %s\033[0m\n", level_name[lvl], timestamp.c_str(), msg.c_str());
 		}
 
 		if (logs[lvl] != NULL)
 		{
-			fprintf(logs[lvl], "[%s] %s\n", timestamp.c_str(), buf);
+			fprintf(logs[lvl], "[%s] %s\n", timestamp.c_str(), msg.c_str());
 		}
-	}
 }
 
 void Log::openLogs()
