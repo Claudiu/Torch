@@ -27,8 +27,16 @@
 #include <sstream>
 #include <torch/log.hpp>
 #include <iostream>
+#include <string>
 
 using namespace Torch;
+
+std::wstring narrowToWide(const std::string& s)
+{
+    std::wstring temp(s.length(), L' ');
+    std::copy(s.begin(), s.end(), temp.begin());
+    return temp;
+}
 
 Log::Log() : use_stdout(true), append(false)
 {
@@ -48,117 +56,70 @@ Log::~Log()
 
 void Log::error(const char* fmt, ...)
 {
-	va_list ap;
-	va_list params;
-
-	va_start(ap, fmt);
-	va_copy(params, ap);
-	va_start(params, fmt);
-
-	print(LOG_ERROR, fmt, ap, params);
-
-	va_end(ap);
-	va_end(params);
+    va_list list;
+	va_start(list, fmt);
+	print(LOG_ERROR, fmt, list);
+	va_end(list);
 }
 
 void Log::warn(const char* fmt, ...)
 {
-	va_list ap;
-	va_list params;
-
-	va_start(ap, fmt);
-	va_copy(params, ap);
-	va_start(params, fmt);
-
-	print(LOG_WARN, fmt, ap, params);
-
-	va_end(ap);
-	va_end(params);
+    va_list list;
+	va_start(list, fmt);
+	print(LOG_WARN, fmt, list);
+	va_end(list);
 }
 
 void Log::notice(const char* fmt, ...)
 {
-	va_list ap;
-	va_list params;
-
-	va_start(ap, fmt);
-	va_copy(params, ap);
-	va_start(params, fmt);
-
-	print(LOG_NOTICE, fmt, ap, params);
-
-	va_end(ap);
-	va_end(params);
+    va_list list;
+	va_start(list, fmt);
+	print(LOG_NOTICE, fmt, list);
+	va_end(list);
 }
 
 void Log::access(const char* fmt, ...)
 {
-	va_list ap;
-	va_list params;
-
-	va_start(ap, fmt);
-	va_copy(params, ap);
-	va_start(params, fmt);
-
-	print(LOG_ACCESS, fmt, ap, params);
-
-	va_end(ap);
-	va_end(params);
+    va_list list;
+	va_start(list, fmt);
+	print(LOG_ACCESS, fmt, list);
+	va_end(list);
 }
 
 void Log::client(const char* fmt, ...)
 {
-	va_list ap;
-	va_list params;
-
-	va_start(ap, fmt);
-	va_copy(params, ap);
-	va_start(params, fmt);
-
-	print(LOG_CLIENT, fmt, ap, params);
-
-	va_end(ap);
-	va_end(params);
+    va_list list;
+	va_start(list, fmt);
+	print(LOG_CLIENT, fmt, list);
+	va_end(list);
 }
 
-void Log::print(log_level lvl, const char* fmt, va_list ap, va_list params)
+void Log::print(log_level lvl, const char* fmt, va_list list)
 {	
-	assert(lvl < LOG_NUM);
-	
-	if (strlen(fmt) == 0)
-		return;
+    assert(lvl < LOG_NUM);
 
-	int size = vsnprintf(0, 0, fmt, ap);
-	if (size <= 0)
-		return;
+    const char* level_name[] = {
+        "\033[31mERROR",
+        "\033[33mWARNING",
+        "\033[34mNOTICE",
+        "\033[37mCLIENT",
+        "\033[32mACCESS"
+    };
 
-	char* buffer = new char[size + 1];
-	size = vsnprintf(buffer, size, fmt, params);
+    std::string timestamp = getTimestamp();
 
-	if (size <= 0)
-		return;
+    if (use_stdout)
+    {
+        printf("%s [%s] ", level_name[lvl], timestamp.c_str());
+        vprintf(fmt, list);
+        printf("\033[0m\n");
+    }
 
-		std::string timestamp = getTimestamp();
-		const char* level_name[] = {
-			"\033[31mERROR",
-			"\033[33mWARNING",
-			"\033[34mNOTICE",
-			"\033[37mCLIENT",
-			"\033[32mACCESS"
-		};
-
-		if (use_stdout)
-		{
-			printf("%s [%s] %s\033[0m\n", level_name[lvl], timestamp.c_str(), buffer);
-		}
-
-		if (logs[lvl] != NULL)
-		{
-			fprintf(logs[lvl], "[%s] %s\n", timestamp.c_str(), buffer);
-		}
-
-		if (buffer)
-			delete [] buffer;
+    if (logs[lvl] != NULL)
+    {
+        fprintf(logs[lvl], "[%s] ", level_name[lvl]);
+        vfwprintf(logs[lvl], narrowToWide(fmt).c_str(), list);
+    }
 }
 
 void Log::openLogs()

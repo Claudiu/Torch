@@ -50,5 +50,5 @@ Request::Request(const std::string & data)
     //for (int i = 0; i<_headers.size(); i++)
       //  msg += "header: \"" + _headers[i] + "\"";
 
-    Log::inst().access(msg.c_str());
+    Log::inst().access("%s", msg.c_str());
 }
