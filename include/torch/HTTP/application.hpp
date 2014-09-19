@@ -37,7 +37,8 @@ namespace Torch {
 		class Application
 		{
             public:
-            typedef void (*callback_func)(const Request &, Response &);
+						std::string getMimeType(const char*);
+						typedef void (*callback_func)(const Request &, Response &);
             volatile int quit_requested;
 
             protected:

@@ -39,3 +39,7 @@ set(TORCH_SOURCES
 
 add_library(torch ${TORCH_SOURCES} ${TORCH_HEADERS})
 include_directories(include)
+
+link_directories(/usr/local/lib)
+
+target_link_libraries(torch magic)
