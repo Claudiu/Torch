@@ -28,6 +28,9 @@
 #include <cstdio>
 #include <unistd.h>
 
+#include <magic.h>
+
+
 #include <torch/http.hpp>
 #include <torch/sockets.hpp>
 #include <torch/util.hpp>
@@ -75,6 +78,33 @@ namespace Torch{
         }
 }
 
+std::string Application::getMimeType(const char * staticFile) {
+	std::string rez = "text/plain";
+
+	magic_t magic;
+	magic = magic_open(MAGIC_MIME_TYPE);
+	magic_load(magic, NULL);
+	rez = std::string(magic_file(magic, staticFile));
+	magic_close(magic);
+
+	if(rez != "text/plain")
+		return rez;
+	else {
+		//plan B :(
+		std::string sf_string = staticFile;
+		std::string extension = sf_string.substr(sf_string.find_last_of(".") + 1);
+
+		// add more here.... Dirty hack :D
+		if(extension == "css")
+			return "text/css";
+		else if(extension == "js")
+			return "application/javascript";
+		else
+			return rez;
+	}
+
+}
+
 void Application::dispatchRequest(const Request & req, Response & res)
 {
     if (req.method() == "GET")
@@ -92,7 +122,8 @@ void Application::dispatchRequest(const Request & req, Response & res)
             
             if(file.is_open() == true) 
             {
-
+								res.setHeader("Content-Type", getMimeType(std::string(staticDir + req.url()).c_str()));
+								
                 std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
                 res.send(str);
