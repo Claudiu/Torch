@@ -71,7 +71,7 @@ namespace Torch {
    		private:
     	Log();
 
-    	void print(log_level lvl, const char* fmt, va_list list);
+    	void print(log_level lvl, const char* fmt, va_list list, va_list params);
     	std::string getTimestamp();
     };
 

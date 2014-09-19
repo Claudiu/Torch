@@ -49,73 +49,94 @@ Log::~Log()
 void Log::error(const char* fmt, ...)
 {
 	va_list ap;
+	va_list params;
+
 	va_start(ap, fmt);
-	print(LOG_ERROR, fmt, ap);
+	va_copy(params, ap);
+	va_start(params, fmt);
+
+	print(LOG_ERROR, fmt, ap, params);
+
 	va_end(ap);
+	va_end(params);
 }
 
 void Log::warn(const char* fmt, ...)
 {
 	va_list ap;
+	va_list params;
+
 	va_start(ap, fmt);
-	print(LOG_WARN, fmt, ap);
+	va_copy(params, ap);
+	va_start(params, fmt);
+
+	print(LOG_WARN, fmt, ap, params);
+
 	va_end(ap);
+	va_end(params);
 }
 
 void Log::notice(const char* fmt, ...)
 {
 	va_list ap;
+	va_list params;
+
 	va_start(ap, fmt);
-	print(LOG_NOTICE, fmt, ap);
+	va_copy(params, ap);
+	va_start(params, fmt);
+
+	print(LOG_NOTICE, fmt, ap, params);
+
 	va_end(ap);
+	va_end(params);
 }
 
 void Log::access(const char* fmt, ...)
 {
 	va_list ap;
+	va_list params;
+
 	va_start(ap, fmt);
-	print(LOG_ACCESS, fmt, ap);
+	va_copy(params, ap);
+	va_start(params, fmt);
+
+	print(LOG_ACCESS, fmt, ap, params);
+
 	va_end(ap);
+	va_end(params);
 }
 
 void Log::client(const char* fmt, ...)
 {
 	va_list ap;
+	va_list params;
+
 	va_start(ap, fmt);
-	print(LOG_CLIENT, fmt, ap);
+	va_copy(params, ap);
+	va_start(params, fmt);
+
+	print(LOG_CLIENT, fmt, ap, params);
+
 	va_end(ap);
+	va_end(params);
 }
 
-void Log::print(log_level lvl, const char* fmt, va_list ap)
+void Log::print(log_level lvl, const char* fmt, va_list ap, va_list params)
 {	
-	std::string msg = "";
-	int size = 200, currentSize = size, r = 0;
-	char* buf = new char[size + 1];
-
 	assert(lvl < LOG_NUM);
 	
 	if (strlen(fmt) == 0)
 		return;
 
-	while (true) {
-		r = vsnprintf(buf, currentSize, fmt, ap);
+	int size = vsnprintf(0, 0, fmt, ap);
+	if (size <= 0)
+		return;
 
-		if (r < size)
-			break;
+	char* buffer = new char[size + 1];
+	size = vsnprintf(buffer, size, fmt, params);
 
-		if (r >= 0) {
-			delete[] buf;
-			currentSize += size;
-			buf = new char[currentSize + 1];
-		}
-		else
-			break;
-	}	
-
-	if (buf) {
-		msg = buf;
-		delete[] buf;
-	}
+	if (size <= 0)
+		return;
 
 		std::string timestamp = getTimestamp();
 		const char* level_name[] = {
@@ -128,13 +149,16 @@ void Log::print(log_level lvl, const char* fmt, va_list ap)
 
 		if (use_stdout)
 		{
-			printf("%s [%s] %s\033[0m\n", level_name[lvl], timestamp.c_str(), msg.c_str());
+			printf("%s [%s] %s\033[0m\n", level_name[lvl], timestamp.c_str(), buffer);
 		}
 
 		if (logs[lvl] != NULL)
 		{
-			fprintf(logs[lvl], "[%s] %s\n", timestamp.c_str(), msg.c_str());
+			fprintf(logs[lvl], "[%s] %s\n", timestamp.c_str(), buffer);
 		}
+
+		if (buffer)
+			delete [] buffer;
 }
 
 void Log::openLogs()
