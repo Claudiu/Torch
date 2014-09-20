@@ -42,7 +42,7 @@ namespace Torch {
             volatile int quit_requested;
 
             protected:
-            std::map<std::string, callback_func> get_map;
+            std::map<std::string, callback_func> get_map, head_map, post_map, put_map, delete_map;
 
             void dispatchRequest(const Request &, Response &);
             friend class Connection;
@@ -52,11 +52,13 @@ namespace Torch {
 
             std::string staticDir;
 
-			void get(const std::string& what, callback_func cback);
-			void put();
-			void post();
-
-            static const short DEFAULT_PORT = 80;
+						void get(const std::string& what, callback_func cback);
+						void head(const std::string& what, callback_func cback);
+						void post(const std::string& what, callback_func cback);
+						void put(const std::string& what, callback_func cback);
+						void remove(const std::string& what, callback_func cback);
+						
+						static const short DEFAULT_PORT = 80;
 
 			void listen(short port = DEFAULT_PORT);
             void close();

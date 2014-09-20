@@ -65,7 +65,7 @@ void Response::send(short code, const std::string& what) {
         codes[307] = "Temporary Redirect";
         codes[404] = "Not Found";
         codes[418] = "I'm a teapot ... wait what?";
-
+				codes[501] = "Not Implemented";
     }
 
 	temp << "HTTP/1.1 "<<code<<" "<<codes[code]<<"\n";
@@ -76,7 +76,12 @@ void Response::send(short code, const std::string& what) {
 		temp << it->first << ": " << it->second << "\n";
 
 	if(header.items.find("Connection") == header.items.end()) {
-		temp << "Connection: Close\n";
+		// RFC7231 defaults to keep-alive not close
+		temp << "Connection: keep-alive\n";
+	}
+
+	if(header.items.find("Cache-Control") == header.items.end()) {
+		temp << "Cache-Control: no-cache\n";
 	}
 
 	temp << "\n";

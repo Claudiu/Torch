@@ -39,16 +39,18 @@ Request::Request(const std::string & data)
         if (ss.size() && (ss[ss.size()-1]=='\r'))
             ss.resize(ss.size()-1);
         if (ss.empty()) continue;
-        _headers.push_back(ss);
-    }
+        	_headers.push_back(ss);
+		}
+
+		if(_headers.size() != 0)
+			if(_headers.back().find(":") == std::string::npos) {
+				_body = _headers.back();
+				_headers.erase(_headers.end());			
+			}			
 
     std::string msg;
     msg += "Client requested using \"" + _method + "\"";
     msg += " \"" + _url + "\"";
-    //msg += "version: \"" + _version + "\"";
-
-    //for (int i = 0; i<_headers.size(); i++)
-      //  msg += "header: \"" + _headers[i] + "\"";
 
     Log::inst().access("%s", msg.c_str());
 }

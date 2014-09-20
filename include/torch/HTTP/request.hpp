@@ -31,11 +31,12 @@ namespace Torch {
         class Request 
         {
             protected:
-            std::string _method, _url, _version;
+            std::string _method, _url, _version, _body;
             std::vector<std::string> _headers;
 
             public:
-            const std::string & method() const { return _method; }
+            const std::string & body() const { return _body; }
+						const std::string & method() const { return _method; }
             const std::string & url() const { return _url; }
             const std::string & httpVersion() const { return _version; }
             const std::vector<std::string> headers() const { return _headers; }

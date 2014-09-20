@@ -4,7 +4,7 @@
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 
-const short PORT = 8080;
+const short PORT = 5314;
 
 using namespace Torch;
 using namespace Torch::HTTP;
@@ -16,7 +16,7 @@ namespace Routes {
 
 	void account(const Request & req, Response & res) {
 		res.setHeader("Content-Type", "application/json");
-        res.send(std::string("<h1>Bank Account</h1>") + req.url() + "</p>");
+        res.send(std::string("<h1>Bank Account</h1>") + req.url() + " and something like " + req.body() + "</p>");
 	}
 
 	void redirect(const Request & req, Response & res) {
@@ -46,11 +46,11 @@ int main(int argc, char const *argv[])
 
 		app.get("/", &Routes::index);
 		app.get("/account", &Routes::account);
-		app.get("/redirectme", &Routes::redirect);
+		app.put("/redirectme", &Routes::redirect);
 
-        Log::inst().closeLogs();
+    Log::inst().closeLogs();
 
-        app.listen(PORT);
+    app.listen(PORT);
 
 	} catch (std::exception & e) {
 		Log::inst().error(e.what());

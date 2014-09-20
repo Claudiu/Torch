@@ -87,9 +87,11 @@ std::string Application::getMimeType(const char * staticFile) {
 	rez = std::string(magic_file(magic, staticFile));
 	magic_close(magic);
 
-	if(rez != "text/plain")
+	if(rez != "text/plain") {
+		if(rez == "text/html")
+			rez += ";charset=utf-8"; //TODO: Add more charsets see IANA.org
 		return rez;
-	else {
+	} else {
 		//plan B :(
 		std::string sf_string = staticFile;
 		std::string extension = sf_string.substr(sf_string.find_last_of(".") + 1);
@@ -116,10 +118,21 @@ void Application::dispatchRequest(const Request & req, Response & res)
             i->second(req, res);
         }
         else
-        {   
-            std::fstream file;
-            file.open(std::string(staticDir + req.url()).c_str()); // lazy way
-            
+        {  	
+						std::string filepath = staticDir + req.url();
+						
+						if(filepath.find("/../") != std::string::npos) {
+							// LFI detected
+							// You can even play with the damn fool by sending him fake /etc/shadow files or other stuff
+							Log::inst().error("!! Possible LFI attack detected. !!");
+							res.send(403);
+							
+							return;
+						} 
+
+						std::fstream file;
+            file.open(filepath.c_str()); // lazy way
+
             if(file.is_open() == true) 
             {
 								res.setHeader("Content-Type", getMimeType(std::string(staticDir + req.url()).c_str()));
@@ -127,19 +140,54 @@ void Application::dispatchRequest(const Request & req, Response & res)
                 std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
                 res.send(str);
-
+								file.close();
             } else {
-                Log::inst().error("Got nothing to show for: %s", req.url().c_str());
+                Log::inst().error("Got nothing to show for: %s -> sending 404", req.url().c_str());
                 res.send(404, ":(");
             }
         }         
-    }
+		} else if(req.method() == "POST") { // BEST EXAMPLE OF DRY
+			std::map<std::string, callback_func>::iterator i = post_map.find(req.url());
+			
+			if(i!=post_map.end()) {
+					res.setLocation(req.url());
+					res.setHeader("Content-Type", "text/html");
+					i->second(req, res);
+			} else {
+				Log::inst().error("No POST method for: %s -> sending 404", req.url().c_str());
+				res.send(404);
+			}
+		} else if(req.method() == "PUT") {
+			std::map<std::string, callback_func>::iterator i = put_map.find(req.url());
+			
+			if(i!=put_map.end()) {
+					res.setLocation(req.url());
+					res.setHeader("Content-Type", "text/html");
+					i->second(req, res);
+			} else {
+				Log::inst().error("No PUT method for: %s -> sending 404", req.url().c_str());
+				res.send(404);
+			}
+		} else if(req.method() == "DELETE") {
+			std::map<std::string, callback_func>::iterator i = delete_map.find(req.url());
+			
+			if(i!=delete_map.end()) {
+					res.setLocation(req.url());
+					res.setHeader("Content-Type", "text/html");
+					i->second(req, res);
+			} else {
+				Log::inst().error("No DELETE method for: %s -> sending 404", req.url().c_str());
+				res.send(404);
+			}
+		} else {
+			res.send(501, "Not Implemented");
+		}
 }
 
-void Application::get(const std::string& what, callback_func cback)
-{
-    get_map[what] = cback;
-}
+void Application::get(const std::string& what, callback_func cback) 	{ get_map[what] = cback; } 
+void Application::post(const std::string& what, callback_func cback) 	{ post_map[what] = cback; }
+void Application::put(const std::string& what, callback_func cback) 	{ put_map[what] = cback; }
+void Application::remove(const std::string& what, callback_func cback) { delete_map[what] = cback; }
 
 void Application::listen(short port)
 {
