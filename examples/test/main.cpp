@@ -16,7 +16,7 @@ namespace Routes {
 
 	void account(const Request & req, Response & res) {
 		res.setHeader("Content-Type", "application/json");
-    res.send(std::string("<h1>Bank Account</h1>") + req.url() + " and something like " + req.body() + "</p>");
+    res.send(std::string("<h1>Bank Account</h1>") + req.url() + " and something like " + req.body("name") + "</p>");
 	}
 
 	void cookie(const Request & req, Response & res) {

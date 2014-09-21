@@ -37,9 +37,13 @@ namespace Torch {
 						std::map<std::string, std::string> _cookies;
 
             public:
+						const std::string getValueOf(const std::string what, const std::string from) const;
 						const std::string getHeader (const std::string) const;
             const std::string getCookie (const std::string) const;
+						
 						const std::string & body() const { return _body; }
+						const std::string body(const std::string) const;
+
 						const std::string & method() const { return _method; }
             const std::string & url() const { return _url; }
             const std::string & httpVersion() const { return _version; }

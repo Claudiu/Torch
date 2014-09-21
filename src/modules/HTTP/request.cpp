@@ -28,23 +28,29 @@
 using namespace Torch;
 using namespace Torch::HTTP;
 
-const std::string Request::getCookie(const std::string what) const {
+const std::string Request::getValueOf(const std::string what, const std::string from) const {
 	std::string rez = "";
-	std::string cookieString = getHeader("Cookie");
 
-	if(cookieString == "")
+	if(from == "")
 		return rez;
 	else {
-		std::size_t where = cookieString.find(what);
-		// if the cookie contains ; in any way... we are so f*cked
-		// TODO: Fix this
+		std:size_t where = from.find(what);
 
-		if(where!=std::string::npos)
-			rez = cookieString.substr(where, cookieString.find(";", where));
+		if(where != std::string::npos) {
+			rez = from.substr(where, from.find(";", where));
 			rez = rez.substr(rez.find("=") + 1);
+		}
 	}
 
 	return rez;
+}
+
+const std::string Request::getCookie(const std::string what) const {
+	return getValueOf(what, getHeader("Cookie"));
+}
+
+const std::string Request::body(const std::string what) const {
+	return getValueOf(what, body());
 }
 
 const std::string Request::getHeader(const std::string what) const {
