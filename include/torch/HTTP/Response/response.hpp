@@ -73,6 +73,7 @@ namespace Torch {
                     return false;
             }
 
+						void setCookie(const std::string& what, const std::string& to);
             void setHeader(const std::string& what, const std::string& to);
 
             std::string getLocation() {

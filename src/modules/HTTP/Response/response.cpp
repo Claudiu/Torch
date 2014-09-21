@@ -43,6 +43,10 @@ void Response::send(const std::string& what) {
 	send(HTTP_OK, what);
 }
 
+void Response::setCookie(const std::string& what, const std::string& to) {
+	setHeader("Set-Cookie", std::string(what + "=" + to));
+}
+
 void Response::setHeader(const std::string& what, const std::string& to) {
     std::map<std::string, std::string>::iterator it;
     it = header.items.find(what);

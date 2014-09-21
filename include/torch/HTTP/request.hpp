@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace Torch {
     namespace HTTP {
@@ -33,9 +34,12 @@ namespace Torch {
             protected:
             std::string _method, _url, _version, _body;
             std::vector<std::string> _headers;
+						std::map<std::string, std::string> _cookies;
 
             public:
-            const std::string & body() const { return _body; }
+						const std::string getHeader (const std::string) const;
+            const std::string getCookie (const std::string) const;
+						const std::string & body() const { return _body; }
 						const std::string & method() const { return _method; }
             const std::string & url() const { return _url; }
             const std::string & httpVersion() const { return _version; }

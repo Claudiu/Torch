@@ -16,7 +16,14 @@ namespace Routes {
 
 	void account(const Request & req, Response & res) {
 		res.setHeader("Content-Type", "application/json");
-        res.send(std::string("<h1>Bank Account</h1>") + req.url() + " and something like " + req.body() + "</p>");
+    res.send(std::string("<h1>Bank Account</h1>") + req.url() + " and something like " + req.body() + "</p>");
+	}
+
+	void cookie(const Request & req, Response & res) {
+		res.setCookie("username", "claudiu");
+		std::string cookie = req.getCookie("name");
+		Log::inst().notice("Found cookie %s.", cookie.c_str());
+		res.send(200, cookie);
 	}
 
 	void redirect(const Request & req, Response & res) {
@@ -44,8 +51,13 @@ int main(int argc, char const *argv[])
 
 		app.staticDir = "static";
 
+		app.get("/cookie", &Routes::cookie);
+		
 		app.get("/", &Routes::index);
-		app.get("/account", &Routes::account);
+		app.post("/account", &Routes::account);
+		app.put("/account", &Routes::account);
+		app.remove("/account", &Routes::account);
+
 		app.put("/redirectme", &Routes::redirect);
 
     Log::inst().closeLogs();

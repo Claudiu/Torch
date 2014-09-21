@@ -28,25 +28,74 @@
 using namespace Torch;
 using namespace Torch::HTTP;
 
+const std::string Request::getCookie(const std::string what) const {
+	std::string rez = "";
+	std::string cookieString = getHeader("Cookie");
+
+	if(cookieString == "")
+		return rez;
+	else {
+		std::size_t where = cookieString.find(what);
+		// if the cookie contains ; in any way... we are so f*cked
+		// TODO: Fix this
+
+		if(where!=std::string::npos)
+			rez = cookieString.substr(where, cookieString.find(";", where));
+			rez = rez.substr(rez.find("=") + 1);
+	}
+
+	return rez;
+}
+
+const std::string Request::getHeader(const std::string what) const {
+	std::string rez = "";
+	for(std::vector<std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it) {
+		if(it->substr(0, what.size()) == what) {
+			size_t pos = it->find_first_of(":");
+			rez = it->substr(pos + 1);
+		
+			// eliminate header spaces and get to the good part
+			size_t spaces = 0;
+			while(rez[spaces] == ' ')
+				spaces++;
+			rez = rez.substr(spaces);
+			
+			break;
+		}
+	}
+
+	return rez;
+}
+
 Request::Request(const std::string & data)
 {
     std::stringstream s(data);
     s>>_method>>_url>>_version;
-    std::string ss;
+    
+		std::string ss;
+		short isHeader = 0;
+
     while (s.good())
     {
         getline(s, ss);
         if (ss.size() && (ss[ss.size()-1]=='\r'))
             ss.resize(ss.size()-1);
-        if (ss.empty()) continue;
-        	_headers.push_back(ss);
+        		
+				if (ss.empty()) {
+					isHeader++;
+					continue;
+				}
+        
+				// this has to be the best hack ever
+				// since the first line is EMPTY.. this gets autoset to false
+				// in the previous version
+				if (isHeader == 1)
+					_headers.push_back(ss);
+				else
+					_body = ss;
 		}
 
-		if(_headers.size() != 0)
-			if(_headers.back().find(":") == std::string::npos) {
-				_body = _headers.back();
-				_headers.erase(_headers.end());			
-			}			
+
 
     std::string msg;
     msg += "Client requested using \"" + _method + "\"";
