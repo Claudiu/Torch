@@ -49,6 +49,7 @@ namespace Torch {
         class Response
         {
         private:
+					bool headersSent;
         	Sockets::Socket * sock;
         public:
             Response(Sockets::Socket *);

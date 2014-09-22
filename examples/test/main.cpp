@@ -4,7 +4,7 @@
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 
-const short PORT = 5314;
+const short PORT = 8080;
 
 using namespace Torch;
 using namespace Torch::HTTP;

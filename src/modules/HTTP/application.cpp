@@ -139,7 +139,8 @@ void Application::dispatchRequest(const Request & req, Response & res)
 								
                 std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
-                res.send(str);
+                res.setHeader("Transfer-Encoding", "chunked");
+								res.send(str);
 								file.close();
             } else {
                 Log::inst().error("Got nothing to show for: %s -> sending 404", req.url().c_str());

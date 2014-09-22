@@ -31,6 +31,7 @@ using namespace Torch::Sockets;
 Response::Response(Socket * s) : sock(s) {
 	// Defaults
 	setServerName("Torch");
+	headersSent = false;
 }
 
 void Response::redirect(const std::string& to, short code) {
@@ -48,47 +49,58 @@ void Response::setCookie(const std::string& what, const std::string& to) {
 }
 
 void Response::setHeader(const std::string& what, const std::string& to) {
-    std::map<std::string, std::string>::iterator it;
-    it = header.items.find(what);
+  	if(headersSent == true)
+			Log::inst().error("Headers already sent.");
 
-    if(it == header.items.end())
-        header.items.insert(std::make_pair(what, to));
-    else
-        it->second = to;
+    header.items[what] = to;
+		
+		//it = header.items.find(what);
+
+   // if(it == header.items.end())
+     //   header.items.insert(std::make_pair(what, to));
+    //else
+      //  it->second = to;
 
 }
 
 void Response::send(short code, const std::string& what) {
-	std::stringstream temp;
+		std::stringstream temp;
+		
+		if(headersSent == false) {
+			static std::map<short, std::string> codes;
 
-    static std::map<short, std::string> codes;
+			if (!codes.size())
+			{
+					codes[200] = "OK";
+					codes[307] = "Temporary Redirect";
+					codes[404] = "Not Found";
+					codes[418] = "I'm a teapot ... wait what?";
+					codes[501] = "Not Implemented";
+			}
 
-    if (!codes.size())
-    {
-        codes[200] = "OK";
-        codes[307] = "Temporary Redirect";
-        codes[404] = "Not Found";
-        codes[418] = "I'm a teapot ... wait what?";
-				codes[501] = "Not Implemented";
-    }
+		temp << "HTTP/1.1 "<<code<<" "<<codes[code]<<"\n";
 
-	temp << "HTTP/1.1 "<<code<<" "<<codes[code]<<"\n";
+		if(header.items.find("Content-Length") == header.items.end() &&
+					header.items.find("Transfer-Encoding") == header.items.end()) {
+				temp << "Content-Length: " << what.length() << "\n";
+		}
 
-	temp << "Content-Length: " << what.length() << "\n";
+		for (std::map<std::string, std::string>::iterator it = header.items.begin(); it != header.items.end(); ++it)
+			temp << it->first << ": " << it->second << "\n";
 
-	for (std::map<std::string, std::string>::iterator it = header.items.begin(); it != header.items.end(); ++it)
-		temp << it->first << ": " << it->second << "\n";
+		if(header.items.find("Connection") == header.items.end()) {
+			// RFC7231 defaults to keep-alive not close
+			temp << "Connection: keep-alive\n";
+		}
 
-	if(header.items.find("Connection") == header.items.end()) {
-		// RFC7231 defaults to keep-alive not close
-		temp << "Connection: keep-alive\n";
+		if(header.items.find("Cache-Control") == header.items.end()) {
+			temp << "Cache-Control: no-cache\n";
+		}
+
+		temp << "\n";
+		headersSent = true;
 	}
 
-	if(header.items.find("Cache-Control") == header.items.end()) {
-		temp << "Cache-Control: no-cache\n";
-	}
-
-	temp << "\n";
 	temp << what;
 
 	std::string t = temp.str();
