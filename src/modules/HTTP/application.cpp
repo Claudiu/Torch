@@ -28,6 +28,8 @@
 #include <cstdio>
 #include <unistd.h>
 
+#include <sys/stat.h>
+
 #include <magic.h>
 
 
@@ -130,18 +132,32 @@ void Application::dispatchRequest(const Request & req, Response & res)
 							return;
 						} 
 
-						std::fstream file;
-            file.open(filepath.c_str()); // lazy way
+						std::ifstream file;
+            file.open(filepath.c_str(), std::ifstream::binary | std::ios::in); 
 
+						char *buffer =  new char[300];
             if(file.is_open() == true) 
             {
-								res.setHeader("Content-Type", getMimeType(std::string(staticDir + req.url()).c_str()));
+								struct stat stat_buf;
+								int rc = stat(filepath.c_str(), &stat_buf);
 								
-                std::string str((std::istreambuf_iterator<char>(file)),
-                 std::istreambuf_iterator<char>());
-                res.setHeader("Transfer-Encoding", "chunked");
-								res.send(str);
+								long int a = stat_buf.st_size;
+								std::ostringstream tempLen;
+								tempLen << stat_buf.st_size;
+								res.setHeader("Content-Length", tempLen.str().c_str());
+
+								res.setHeader("Content-Type", getMimeType(std::string(staticDir + req.url()).c_str()));
+
+								while(file.good()) {
+									file.read(buffer, 299);
+									int br = file.gcount();
+									buffer[br] = 0;
+									res.send(buffer);
+									file.seekg(299, std::ios::cur);
+								}
+
 								file.close();
+								delete[] buffer;
             } else {
                 Log::inst().error("Got nothing to show for: %s -> sending 404", req.url().c_str());
                 res.send(404, ":(");

@@ -74,7 +74,7 @@ void Response::send(short code, const std::string& what) {
 					codes[200] = "OK";
 					codes[307] = "Temporary Redirect";
 					codes[404] = "Not Found";
-					codes[418] = "I'm a teapot ... wait what?";
+					codes[418] = "I'm a teapot";
 					codes[501] = "Not Implemented";
 			}
 
@@ -102,16 +102,13 @@ void Response::send(short code, const std::string& what) {
 	}
 
 	temp << what;
-
+	
 	std::string t = temp.str();
-	const char * kitty = t.c_str();
+	if(t.size() == 0) return;
+	uint8_t * rez = new uint8_t[t.size() + 1];
+	memcpy(rez, t.c_str(), t.size());
 
-	size_t kitty_tail_length = strlen(kitty); 
-	uint8_t * rez = new uint8_t[kitty_tail_length];
+	Log::inst().notice("Sending HTTP Response back %d bytes.", t.size());
 
-	memcpy(rez, kitty, kitty_tail_length);
-
-	Log::inst().notice("Sending HTTP Response back.");
-
-	sock->queueForWriting(rez, kitty_tail_length);
+	sock->queueForWriting(rez, t.size());
 }

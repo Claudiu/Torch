@@ -4,7 +4,7 @@
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 
-const short PORT = 8080;
+const short PORT = 5314;
 
 using namespace Torch;
 using namespace Torch::HTTP;
@@ -21,7 +21,9 @@ namespace Routes {
 
 	void cookie(const Request & req, Response & res) {
 		res.setCookie("username", "claudiu");
-		std::string cookie = req.getCookie("name");
+		
+		std::string cookie = req.getCookie("username");
+
 		Log::inst().notice("Found cookie %s.", cookie.c_str());
 		res.send(200, cookie);
 	}
@@ -35,24 +37,15 @@ namespace Routes {
 // Why not do something like"Server running on port" if (!signal_already_bound(SIGINT)) signal(SIGINT, sigint);
 // in app.listen()?
 Torch::HTTP::Application app;
-void sigint(int)
-{
-	app.close();
-	printf ("The torch was extinguished :(\n\n");
-	exit(0);
-}
 
 int main(int argc, char const *argv[])
 {
 	try {
 		Log::inst().openLogs();
 
-		signal(SIGINT, sigint);
-
 		app.staticDir = "static";
 
-		app.get("/cookie", &Routes::cookie);
-		
+		app.get("/cookie", &Routes::cookie);	
 		app.get("/", &Routes::index);
 		app.post("/account", &Routes::account);
 		app.put("/account", &Routes::account);
