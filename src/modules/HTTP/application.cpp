@@ -98,6 +98,7 @@ void Application::dispatchRequest(const Request & req, Response & res)
 							return;
 						} 
 						if(res.sendFile(filepath) < 0) {
+							Log::inst().error("No file or page.");
 							res.send(404);
 						}	
         }         

@@ -34,7 +34,7 @@ using namespace Torch::Sockets;
 
 Response::Response(Socket * s) : sock(s) {
 	// Defaults
-	setServerName("Torch");
+	//setServerName("Torch");
 	headersSent = false;
 }
 
@@ -88,16 +88,15 @@ long int Response::sendFile(const std::string filepath) {
 			setHeader("Content-Length", tempLen.str().c_str());
 			setHeader("Content-Type", getMimeType(filepath.c_str()));
 
-			long int chunkSize = 1024; // <1MB
+			long int chunkSize = 10000;
 			
-			do {
-				char *buffer =  new char[chunkSize];
+			char *buffer = new char[chunkSize];
+			
+			do {	
 				file.read(buffer, chunkSize);
-				// buffer - std::string(buffer) adica... copiaza
-				// pana intalneste /0..
-				send(buffer);
-				delete[] buffer;
+				send(std::string(buffer, chunkSize));
 			} while(!file.eof());
+			delete[] buffer;	
 
 			file.close();
 
@@ -157,6 +156,7 @@ void Response::send(short code, const std::string& what) {
 		}
 
 		temp << "\n";
+		Log::inst().notice("Sending HTTP Response back stuff.");
 		headersSent = true;
 	}
 
@@ -164,12 +164,8 @@ void Response::send(short code, const std::string& what) {
 
 	std::string t = temp.str();
 
-	// I think t.size shows the position of the first null byte it meets
 	uint8_t * rez = new uint8_t[t.size() + 1];
 	memcpy(rez, t.c_str(), t.size());
 
-	Log::inst().notice("Sending HTTP Response back %d bytes.", t.size());
-
-	std::cout << what.capacity() << std::endl;
 	sock->queueForWriting(rez, t.size());
 }
