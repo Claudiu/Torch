@@ -59,6 +59,7 @@ namespace Torch {
             // send overloads
             void send(short code = HTTP_OK, const std::string& what = "");
             void send(const std::string& what = "");
+						long int sendFile(const std::string filePath);
 
             void setServerName(const std::string& name) {
                 setHeader("Server", name);
@@ -74,6 +75,7 @@ namespace Torch {
                     return false;
             }
 
+						std::string getMimeType(const char * staticFile);
 						void setCookie(const std::string& what, const std::string& to);
             void setHeader(const std::string& what, const std::string& to);
 

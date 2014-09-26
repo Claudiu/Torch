@@ -28,11 +28,6 @@
 #include <cstdio>
 #include <unistd.h>
 
-#include <sys/stat.h>
-
-#include <magic.h>
-
-
 #include <torch/http.hpp>
 #include <torch/sockets.hpp>
 #include <torch/util.hpp>
@@ -80,39 +75,10 @@ namespace Torch{
         }
 }
 
-std::string Application::getMimeType(const char * staticFile) {
-	std::string rez = "text/plain";
-
-	magic_t magic;
-	magic = magic_open(MAGIC_MIME_TYPE);
-	magic_load(magic, NULL);
-	rez = std::string(magic_file(magic, staticFile));
-	magic_close(magic);
-
-	if(rez != "text/plain") {
-		if(rez == "text/html")
-			rez += ";charset=utf-8"; //TODO: Add more charsets see IANA.org
-		return rez;
-	} else {
-		//plan B :(
-		std::string sf_string = staticFile;
-		std::string extension = sf_string.substr(sf_string.find_last_of(".") + 1);
-
-		// add more here.... Dirty hack :D
-		if(extension == "css")
-			return "text/css";
-		else if(extension == "js")
-			return "application/javascript";
-		else
-			return rez;
-	}
-
-}
-
 void Application::dispatchRequest(const Request & req, Response & res)
 {
-    if (req.method() == "GET")
-    {
+	if (req.method() == "GET")
+	{
         std::map<std::string, callback_func>::iterator i = get_map.find(req.url());
         if (i!=get_map.end()) {
             res.setLocation(req.url());
@@ -131,37 +97,9 @@ void Application::dispatchRequest(const Request & req, Response & res)
 							
 							return;
 						} 
-
-						std::ifstream file;
-            file.open(filepath.c_str(), std::ifstream::binary | std::ios::in); 
-
-						char *buffer =  new char[300];
-            if(file.is_open() == true) 
-            {
-								struct stat stat_buf;
-								int rc = stat(filepath.c_str(), &stat_buf);
-								
-								long int a = stat_buf.st_size;
-								std::ostringstream tempLen;
-								tempLen << stat_buf.st_size;
-								res.setHeader("Content-Length", tempLen.str().c_str());
-
-								res.setHeader("Content-Type", getMimeType(std::string(staticDir + req.url()).c_str()));
-
-								while(file.good()) {
-									file.read(buffer, 299);
-									int br = file.gcount();
-									buffer[br] = 0;
-									res.send(buffer);
-									file.seekg(299, std::ios::cur);
-								}
-
-								file.close();
-								delete[] buffer;
-            } else {
-                Log::inst().error("Got nothing to show for: %s -> sending 404", req.url().c_str());
-                res.send(404, ":(");
-            }
+						if(res.sendFile(filepath) < 0) {
+							res.send(404);
+						}	
         }         
 		} else if(req.method() == "POST") { // BEST EXAMPLE OF DRY
 			std::map<std::string, callback_func>::iterator i = post_map.find(req.url());
