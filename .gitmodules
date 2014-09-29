@@ -1,0 +1,3 @@
+[submodule "vendor/jsonxx"]
+	path = vendor/jsonxx
+	url = https://github.com/hjiang/jsonxx
