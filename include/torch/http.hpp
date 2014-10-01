@@ -28,4 +28,6 @@
 #include <torch/HTTP/Response/response.hpp>
 #include <torch/HTTP/request.hpp>
 
+#define Logs Log::inst()
+
 #endif

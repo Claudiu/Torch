@@ -23,6 +23,8 @@
 #ifndef __HTTP_APPLICATION_H__
 #define __HTTP_APPLICATION_H__
 
+#include <iostream>
+#include <signal.h>
 #include <string>
 #include <map>
 #include <vector>
@@ -48,10 +50,9 @@ namespace Torch {
             friend class Connection;
 
             public:
-            Application() : quit_requested(0) { }
-
+						Application();
             std::string staticDir;
-
+						
 						void get(const std::string& what, callback_func cback);
 						void post(const std::string& what, callback_func cback);
 						void put(const std::string& what, callback_func cback);

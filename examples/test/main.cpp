@@ -1,6 +1,4 @@
 #include <cstdlib>
-#include <iostream>
-#include <signal.h>
 #include <torch/http.hpp>
 #include <torch/log.hpp>
 
@@ -24,7 +22,7 @@ namespace Routes {
 		
 		std::string cookie = req.getCookie("username");
 
-		Log::inst().notice("Found cookie %s.", cookie.c_str());
+		Logs.notice("Found cookie %s.", cookie.c_str());
 		res.send(200, cookie);
 	}
 
@@ -33,15 +31,12 @@ namespace Routes {
 	}
 };
 
-// This is one of the worst hacks ever written by me
-// Why not do something like"Server running on port" if (!signal_already_bound(SIGINT)) signal(SIGINT, sigint);
-// in app.listen()?
-Torch::HTTP::Application app;
+Application app;
 
 int main(int argc, char const *argv[])
 {
 	try {
-		Log::inst().openLogs();
+		Logs.openLogs();
 
 		app.staticDir = "static";
 
@@ -53,12 +48,10 @@ int main(int argc, char const *argv[])
 
 		app.put("/redirectme", &Routes::redirect);
 
-    Log::inst().closeLogs();
-
     app.listen(PORT);
 
 	} catch (std::exception & e) {
-		Log::inst().error(e.what());
+		Logs.error(e.what());
 	}
 
 	return 0;

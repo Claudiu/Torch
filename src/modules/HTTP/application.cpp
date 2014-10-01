@@ -28,6 +28,8 @@
 #include <cstdio>
 #include <unistd.h>
 
+#include <signal.h>
+
 #include <torch/http.hpp>
 #include <torch/sockets.hpp>
 #include <torch/util.hpp>
@@ -36,6 +38,13 @@
 using namespace Torch;
 using namespace Torch::HTTP;
 using namespace Torch::Sockets;
+
+extern Application app;
+
+void SIGINT_handler(int a) {
+	app.close();
+}
+
 
 namespace Torch{
     namespace HTTP {
@@ -73,6 +82,10 @@ namespace Torch{
                 }
             };
         }
+}
+
+Application::Application() : quit_requested(0) {
+	signal(SIGINT, SIGINT_handler);
 }
 
 void Application::dispatchRequest(const Request & req, Response & res)
@@ -229,8 +242,10 @@ void Application::listen(short port)
         for (std::set<Connection*>::iterator i = remlist.begin(); i!=remlist.end(); i++)
             conns.erase(*i);
 
-        if (quit_requested)
-            break;
+        if (quit_requested) {
+						Log::inst().closeLogs();
+						break;		
+				}
     }
 
     for (std::set<Connection*>::iterator i = conns.begin(); i!=conns.end(); i++)
@@ -240,14 +255,14 @@ void Application::listen(short port)
         delete *i;
 }
 
-
 void Application::close()
 {
 //    __sync_fetch_and_add(&quit_requested, 1); so not necessary.
 //    assignment is atomic for ints. 
-//    and even if it wasn't, it wouldn't matter since
-//    1) we are not doing this from another thread, we are doing it from
+//    and even if it wasn't, it wouldn't matter since //    1) we are not doing this from another thread, we are doing it from
 //    an interrupt handler. select() being a syscall will only return
 //    after and only after the handler finishes and will set errno to EINTR
-    quit_requested = 1;
+	quit_requested = 1;
 }
+
+
